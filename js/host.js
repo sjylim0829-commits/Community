@@ -98,6 +98,9 @@ function initHostDashboard() {
   const displayBadge = document.getElementById("currentActiveRoomBadge");
   if (displayBadge) displayBadge.textContent = `현재: ${hostState.roomId}`;
 
+  const btnScreen = document.getElementById("btnOpenBigScreen");
+  if (btnScreen) btnScreen.href = `screen.html?room=${encodeURIComponent(hostState.roomId)}`;
+
   document.getElementById("cfgHostPin").value = getHostPin();
 
   initQuestionPresets();
@@ -216,6 +219,9 @@ async function applyRoomCodeChange(customRoom, isSilent = false) {
 
   const displayBadge = document.getElementById("currentActiveRoomBadge");
   if (displayBadge) displayBadge.textContent = `현재: ${newRoom}`;
+
+  const btnScreen = document.getElementById("btnOpenBigScreen");
+  if (btnScreen) btnScreen.href = `screen.html?room=${encodeURIComponent(newRoom)}`;
 
   // URL 파라미터 갱신 (?room=newRoom)
   try {
@@ -1075,10 +1081,35 @@ async function calculateAndShowResults() {
 async function triggerFinalResults() {
   hostState.status = "final";
 
+  // 최종 참가자 랭킹 (1위 ~ 10위) 집계
+  const userStats = new Map();
+  hostState.historyRounds.forEach((r) => {
+    r.participantDetails.forEach((p) => {
+      if (p.choice !== "NONE") {
+        if (!userStats.has(p.nickname)) {
+          userStats.set(p.nickname, { total: 0, majorityWins: 0 });
+        }
+        const s = userStats.get(p.nickname);
+        s.total += 1;
+        if (p.isMajority) {
+          s.majorityWins += 1;
+        }
+      }
+    });
+  });
+
+  const rankList = Array.from(userStats.entries()).map(([nickname, s]) => {
+    const rate = Math.round((s.majorityWins / s.total) * 100);
+    return { nickname, total: s.total, wins: s.majorityWins, rate };
+  });
+
+  rankList.sort((a, b) => b.rate - a.rate || b.wins - a.wins);
+
   const finalPayload = {
     event: "FINAL_RESULTS",
     totalRounds: hostState.historyRounds.length,
-    historyRounds: hostState.historyRounds
+    historyRounds: hostState.historyRounds,
+    rankList: rankList
   };
 
   if (localBroadcast) {

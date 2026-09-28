@@ -219,3 +219,60 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+/* ==========================================================================
+   대형 스크린(Screen.html) 전용 애니메이션 & 유틸리티
+   ========================================================================== */
+@keyframes popModalIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.88) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-pop-in {
+  animation: popModalIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes goldGlow {
+  0%, 100% {
+    box-shadow: 0 10px 30px -5px rgba(245, 158, 11, 0.35), 0 0 15px rgba(245, 158, 11, 0.2);
+  }
+  50% {
+    box-shadow: 0 15px 45px -5px rgba(245, 158, 11, 0.65), 0 0 30px rgba(245, 158, 11, 0.4);
+  }
+}
+
+.gold-glow {
+  animation: goldGlow 2.5s infinite ease-in-out;
+}
+
+@keyframes winnerPulseA {
+  0%, 100% {
+    box-shadow: 0 15px 35px -5px rgba(244, 63, 94, 0.3);
+  }
+  50% {
+    box-shadow: 0 20px 50px 0px rgba(244, 63, 94, 0.6);
+  }
+}
+
+.winner-pulse-a {
+  animation: winnerPulseA 2s infinite ease-in-out;
+}
+
+@keyframes winnerPulseB {
+  0%, 100% {
+    box-shadow: 0 15px 35px -5px rgba(2, 132, 199, 0.3);
+  }
+  50% {
+    box-shadow: 0 20px 50px 0px rgba(2, 132, 199, 0.6);
+  }
+}
+
+.winner-pulse-b {
+  animation: winnerPulseB 2s infinite ease-in-out;
+}
