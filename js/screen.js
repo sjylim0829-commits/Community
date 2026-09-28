@@ -589,12 +589,12 @@ function closeMajorityModal() {
 }
 
 // ============================================================================
-// 3. [요구사항 2] 10문제 완료 시 1위~10위 참가자 순위 명예의 전당 발표
+// 3. [요구사항 반영] 문제 완료 시 일치율 상위 10명(좌측) & 하위 10명(우측) 발표
 // ============================================================================
 function showFinalLeaderboard(finalData) {
   switchView("final");
 
-  // 1위 ~ 10위 랭킹 데이터 확보
+  // 참가자 전체 랭킹 데이터 확보
   let rankList = finalData.rankList;
 
   // 만약 payload에 rankList가 없다면 historyRounds로부터 자동 계산
@@ -602,7 +602,7 @@ function showFinalLeaderboard(finalData) {
     rankList = calculateRankingsFromHistory(finalData.historyRounds || screenState.historyRounds);
   }
 
-  renderPodiumAndTable(rankList);
+  renderDualLeaderboard(rankList);
 
   // 최종 우승 그랜드 팡파르 효과음 및 대형 컨페티 발사
   ScreenSound.playGrandVictory();
@@ -637,81 +637,171 @@ function calculateRankingsFromHistory(historyRounds) {
     return { nickname, total: s.total, wins: s.majorityWins, rate };
   });
 
-  list.sort((a, b) => b.rate - a.rate || b.wins - a.wins);
   return list;
 }
 
-// 1위~10위 포디움 및 리스트 렌더링
-function renderPodiumAndTable(rankList) {
-  const top1 = rankList[0] || null;
-  const top2 = rankList[1] || null;
-  const top3 = rankList[2] || null;
+// 좌(상위 10명 - 높은순) & 우(하위 10명 - 낮은순) 렌더링
+function renderDualLeaderboard(rankList) {
+  const top10Container = document.getElementById("top10ListContainer");
+  const bottom10Container = document.getElementById("bottom10ListContainer");
 
-  // 1위 챔피언 포디움
-  if (top1) {
-    document.getElementById("podium1Name").textContent = top1.nickname;
-    document.getElementById("podium1Rate").textContent = `${top1.rate}%`;
-    document.getElementById("podium1Detail").textContent = `${top1.wins} / ${top1.total}회 다수파 일치`;
-  } else {
-    document.getElementById("podium1Name").textContent = "참가자 없음";
-    document.getElementById("podium1Rate").textContent = "0%";
-    document.getElementById("podium1Detail").textContent = "-";
-  }
+  if (!top10Container || !bottom10Container) return;
 
-  // 2위 포디움
-  if (top2) {
-    document.getElementById("podium2Name").textContent = top2.nickname;
-    document.getElementById("podium2Rate").textContent = `${top2.rate}%`;
-    document.getElementById("podium2Detail").textContent = `${top2.wins} / ${top2.total}회 다수파`;
-  } else {
-    document.getElementById("podium2Name").textContent = "-";
-    document.getElementById("podium2Rate").textContent = "0%";
-    document.getElementById("podium2Detail").textContent = "-";
-  }
-
-  // 3위 포디움
-  if (top3) {
-    document.getElementById("podium3Name").textContent = top3.nickname;
-    document.getElementById("podium3Rate").textContent = `${top3.rate}%`;
-    document.getElementById("podium3Detail").textContent = `${top3.wins} / ${top3.total}회 다수파`;
-  } else {
-    document.getElementById("podium3Name").textContent = "-";
-    document.getElementById("podium3Rate").textContent = "0%";
-    document.getElementById("podium3Detail").textContent = "-";
-  }
-
-  // 4위 ~ 10위 목록 렌더링
-  const container4to10 = document.getElementById("rankList4to10");
-  if (!container4to10) return;
-
-  const restList = rankList.slice(3, 10);
-  if (restList.length === 0) {
-    container4to10.innerHTML = `
-      <div class="col-span-1 md:col-span-2 p-4 text-center text-slate-400 text-xs">
-        4위 이하 순위 참가자가 없습니다.
-      </div>
-    `;
+  if (!rankList || rankList.length === 0) {
+    top10Container.innerHTML = `<div class="p-6 text-center text-slate-400 text-xs">참여 데이터가 없습니다.</div>`;
+    bottom10Container.innerHTML = `<div class="p-6 text-center text-slate-400 text-xs">참여 데이터가 없습니다.</div>`;
     return;
   }
 
-  container4to10.innerHTML = "";
-  restList.forEach((item, idx) => {
-    const rankNum = idx + 4;
+  // 1. 일치율 상위 10명 (높은순: rate 내림차순, 동률 시 wins 내림차순)
+  const sortedHigh = [...rankList].sort((a, b) => b.rate - a.rate || b.wins - a.wins);
+  const top10 = sortedHigh.slice(0, 10);
+
+  // 2. 일치율 하위 10명 (낮은순: rate 오름차순, 동률 시 wins 오름차순)
+  const sortedLow = [...rankList].sort((a, b) => a.rate - b.rate || a.wins - b.wins);
+  const bottom10 = sortedLow.slice(0, 10);
+
+  // --- 좌측: 상위 10명 렌더링 ---
+  top10Container.innerHTML = "";
+  top10.forEach((item, idx) => {
+    const rankNum = idx + 1;
     const card = document.createElement("div");
-    card.className = "flex justify-between items-center p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-sm shadow-xs";
-    card.innerHTML = `
-      <div class="flex items-center gap-3">
-        <span class="w-8 h-8 rounded-lg bg-slate-200 text-slate-700 font-black flex items-center justify-center text-xs">
-          ${rankNum}위
-        </span>
-        <span class="font-bold text-slate-900">${escapeHtml(item.nickname)}</span>
-      </div>
-      <div class="text-right">
-        <span class="text-base font-black font-mono text-emerald-700">${item.rate}%</span>
-        <span class="text-xs text-slate-400 ml-1">(${item.wins}/${item.total}회)</span>
-      </div>
-    `;
-    container4to10.appendChild(card);
+
+    if (rankNum === 1) {
+      // 1위 하이라이트
+      card.className = "flex items-center justify-between p-3.5 rounded-2xl bg-amber-50/90 border-2 border-amber-300 shadow-sm gold-glow";
+      card.innerHTML = `
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-400 text-white font-black flex items-center justify-center text-xs shadow-xs shrink-0">
+            🥇 1위
+          </span>
+          <div class="min-w-0 truncate">
+            <span class="font-black text-slate-900 text-sm md:text-base">${escapeHtml(item.nickname)}</span>
+            <span class="ml-1.5 text-[11px] font-bold text-amber-800 bg-amber-200/70 px-2 py-0.5 rounded-full inline-block">대세 챔피언</span>
+          </div>
+        </div>
+        <div class="text-right shrink-0 ml-2">
+          <span class="text-lg md:text-xl font-black font-mono text-emerald-700">${item.rate}%</span>
+          <span class="text-[11px] text-slate-500 font-medium block">(${item.wins}/${item.total}회)</span>
+        </div>
+      `;
+    } else if (rankNum === 2) {
+      // 2위
+      card.className = "flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200";
+      card.innerHTML = `
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="w-7 h-7 rounded-lg bg-slate-300 text-slate-800 font-black flex items-center justify-center text-xs shrink-0">
+            🥈 2위
+          </span>
+          <span class="font-bold text-slate-900 text-sm truncate">${escapeHtml(item.nickname)}</span>
+        </div>
+        <div class="text-right shrink-0 ml-2">
+          <span class="text-base font-black font-mono text-emerald-700">${item.rate}%</span>
+          <span class="text-[11px] text-slate-400 ml-1">(${item.wins}/${item.total}회)</span>
+        </div>
+      `;
+    } else if (rankNum === 3) {
+      // 3위
+      card.className = "flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200";
+      card.innerHTML = `
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="w-7 h-7 rounded-lg bg-amber-100 text-amber-900 font-black flex items-center justify-center text-xs shrink-0 border border-amber-300">
+            🥉 3위
+          </span>
+          <span class="font-bold text-slate-900 text-sm truncate">${escapeHtml(item.nickname)}</span>
+        </div>
+        <div class="text-right shrink-0 ml-2">
+          <span class="text-base font-black font-mono text-emerald-700">${item.rate}%</span>
+          <span class="text-[11px] text-slate-400 ml-1">(${item.wins}/${item.total}회)</span>
+        </div>
+      `;
+    } else {
+      // 4위 ~ 10위
+      card.className = "flex items-center justify-between p-2.5 rounded-xl bg-slate-50/70 border border-slate-200/70";
+      card.innerHTML = `
+        <div class="flex items-center gap-2.5 min-w-0">
+          <span class="w-6 h-6 rounded-md bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-[11px] shrink-0">
+            ${rankNum}위
+          </span>
+          <span class="font-medium text-slate-800 text-sm truncate">${escapeHtml(item.nickname)}</span>
+        </div>
+        <div class="text-right shrink-0 ml-2">
+          <span class="text-sm font-bold font-mono text-emerald-700">${item.rate}%</span>
+          <span class="text-[11px] text-slate-400 ml-1">(${item.wins}/${item.total}회)</span>
+        </div>
+      `;
+    }
+    top10Container.appendChild(card);
+  });
+
+  // --- 우측: 하위 10명 렌더링 (낮은순) ---
+  bottom10Container.innerHTML = "";
+  bottom10.forEach((item, idx) => {
+    const rankNum = idx + 1;
+    const card = document.createElement("div");
+
+    if (rankNum === 1) {
+      // 최저 일치율 1위 (독보적 개성왕)
+      card.className = "flex items-center justify-between p-3.5 rounded-2xl bg-purple-50/90 border-2 border-purple-300 shadow-sm winner-pulse-b";
+      card.innerHTML = `
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="w-8 h-8 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 text-white font-black flex items-center justify-center text-xs shadow-xs shrink-0">
+            🦄 1위
+          </span>
+          <div class="min-w-0 truncate">
+            <span class="font-black text-slate-900 text-sm md:text-base">${escapeHtml(item.nickname)}</span>
+            <span class="ml-1.5 text-[11px] font-bold text-purple-800 bg-purple-200/70 px-2 py-0.5 rounded-full inline-block">독보적 개성왕</span>
+          </div>
+        </div>
+        <div class="text-right shrink-0 ml-2">
+          <span class="text-lg md:text-xl font-black font-mono text-purple-700">${item.rate}%</span>
+          <span class="text-[11px] text-slate-500 font-medium block">(${item.wins}/${item.total}회 일치)</span>
+        </div>
+      `;
+    } else if (rankNum === 2) {
+      card.className = "flex items-center justify-between p-3 rounded-xl bg-purple-50/40 border border-purple-200";
+      card.innerHTML = `
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="w-7 h-7 rounded-lg bg-purple-200 text-purple-900 font-black flex items-center justify-center text-xs shrink-0">
+            ⚡ 2위
+          </span>
+          <span class="font-bold text-slate-900 text-sm truncate">${escapeHtml(item.nickname)}</span>
+        </div>
+        <div class="text-right shrink-0 ml-2">
+          <span class="text-base font-black font-mono text-purple-700">${item.rate}%</span>
+          <span class="text-[11px] text-slate-400 ml-1">(${item.wins}/${item.total}회)</span>
+        </div>
+      `;
+    } else if (rankNum === 3) {
+      card.className = "flex items-center justify-between p-3 rounded-xl bg-purple-50/40 border border-purple-200";
+      card.innerHTML = `
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="w-7 h-7 rounded-lg bg-purple-100 text-purple-800 font-black flex items-center justify-center text-xs shrink-0 border border-purple-300">
+            ✨ 3위
+          </span>
+          <span class="font-bold text-slate-900 text-sm truncate">${escapeHtml(item.nickname)}</span>
+        </div>
+        <div class="text-right shrink-0 ml-2">
+          <span class="text-base font-black font-mono text-purple-700">${item.rate}%</span>
+          <span class="text-[11px] text-slate-400 ml-1">(${item.wins}/${item.total}회)</span>
+        </div>
+      `;
+    } else {
+      card.className = "flex items-center justify-between p-2.5 rounded-xl bg-purple-50/20 border border-purple-100";
+      card.innerHTML = `
+        <div class="flex items-center gap-2.5 min-w-0">
+          <span class="w-6 h-6 rounded-md bg-purple-100 text-purple-700 font-bold flex items-center justify-center text-[11px] shrink-0">
+            ${rankNum}위
+          </span>
+          <span class="font-medium text-slate-800 text-sm truncate">${escapeHtml(item.nickname)}</span>
+        </div>
+        <div class="text-right shrink-0 ml-2">
+          <span class="text-sm font-bold font-mono text-purple-700">${item.rate}%</span>
+          <span class="text-[11px] text-slate-400 ml-1">(${item.wins}/${item.total}회)</span>
+        </div>
+      `;
+    }
+    bottom10Container.appendChild(card);
   });
 }
 

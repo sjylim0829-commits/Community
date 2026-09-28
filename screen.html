@@ -301,85 +301,78 @@
     </div>
 
     <!-- ==================================================================== -->
-    <!-- 4. [요구사항 2] 문제가 모두 끝난 후 1등~10등 최종 순위 발표 화면 -->
+    <!-- 4. [요구사항 반영] 문제가 모두 끝난 후: 일치율 상위 10명 (좌측) & 하위 10명 (우측) 분할 발표 -->
     <!-- ==================================================================== -->
-    <section id="viewFinal" class="w-full flex flex-col space-y-6 py-4 transition-all duration-300 hidden">
+    <section id="viewFinal" class="w-full flex flex-col space-y-5 py-2 transition-all duration-300 hidden">
       
       <!-- 상단 축하 타이틀 -->
-      <div class="text-center space-y-2 bg-white/95 p-6 md:p-8 rounded-3xl border border-slate-200 shadow-md">
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-black text-sm">
-          <span>🏆</span> <span>10문제 대장정 완료 (FINAL RESULT)</span>
+      <div class="text-center space-y-1.5 bg-white/95 p-4 md:p-6 rounded-2xl border border-slate-200 shadow-md">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500/10 via-purple-500/10 to-emerald-500/10 border border-amber-300 text-amber-800 font-black text-xs md:text-sm">
+          <span>🏆</span> <span>밸런스 게임 모든 문항 완료 (FINAL RANKING)</span> <span>🎉</span>
         </div>
-        <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">
-          🎉 밸런스 게임 최종 명예의 전당 (TOP 10)
+        <h2 class="text-2xl md:text-4xl font-black text-slate-900 tracking-tight">
+          최종 순위 발표: 대세 다수파 vs 독보적 개성파
         </h2>
-        <p class="text-sm md:text-base text-slate-600 font-medium">
-          우리 학교 선생님들의 마음을 가장 잘 꿰뚫어본 최고의 다수파 순위 발표!
+        <p class="text-xs md:text-sm text-slate-600 font-medium">
+          학교 대세 의견과 가장 많이 통한 <strong class="text-emerald-700">상위 10명(높은순)</strong>과 남다른 주관을 가진 <strong class="text-purple-700">하위 10명(낮은순)</strong> 순위입니다.
         </p>
       </div>
 
-      <!-- TOP 3 포디움 카드 (1위, 2위, 3위) -->
-      <div id="podiumContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end pt-4">
+      <!-- 좌 / 우 2분할 랭킹 그리드 (한 화면에 좌우 분할 표시) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6 items-start">
         
-        <!-- 2위 포디움 카드 -->
-        <div id="podium2" class="order-2 md:order-1 glass-panel p-6 text-center space-y-3 border-2 border-slate-300 shadow-lg bg-white/95 rounded-2xl">
-          <div class="text-4xl">🥈</div>
-          <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-700 font-black text-xs border border-slate-300">
-            2위 (은메달)
-          </span>
-          <h4 id="podium2Name" class="text-xl md:text-2xl font-black text-slate-900 truncate">
-            -
-          </h4>
-          <div class="space-y-0.5">
-            <div id="podium2Rate" class="text-3xl font-black font-mono text-slate-700">0%</div>
-            <p id="podium2Detail" class="text-xs text-slate-500 font-medium">0 / 0회 다수파</p>
+        <!-- [좌측] 일치율 상위 10명 (높은순) -->
+        <div class="p-5 md:p-6 rounded-3xl border-2 border-emerald-300 bg-white/95 shadow-xl flex flex-col space-y-3">
+          <div class="flex items-center justify-between border-b border-emerald-100 pb-3">
+            <div class="flex items-center gap-2.5">
+              <span class="text-3xl">👑</span>
+              <div>
+                <h3 class="text-lg md:text-xl font-black text-emerald-950 flex items-center gap-2">
+                  <span>일치율 상위 10명</span>
+                  <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">높은순</span>
+                </h3>
+                <p class="text-xs text-slate-500 font-medium">학교 다수파와 일치율이 가장 높은 대세 적응왕</p>
+              </div>
+            </div>
+            <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200">
+              TOP 10
+            </span>
+          </div>
+
+          <!-- 상위 10명 리스트 컨테이너 -->
+          <div id="top10ListContainer" class="space-y-2 overflow-y-auto max-h-[560px] pr-1">
+            <div class="p-6 text-center text-slate-400 text-xs">
+              상위 순위 집계 대기 중...
+            </div>
           </div>
         </div>
 
-        <!-- 1위 챔피언 포디움 카드 (황금빛 글로우) -->
-        <div id="podium1" class="order-1 md:order-2 glass-panel p-8 text-center space-y-4 border-3 border-amber-400 shadow-2xl bg-gradient-to-b from-amber-50/90 via-white to-amber-50/60 rounded-3xl gold-glow transform md:-translate-y-4">
-          <div class="text-6xl">👑</div>
-          <span class="px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-black text-sm shadow-md">
-            🥇 1위 (챔피언)
-          </span>
-          <h4 id="podium1Name" class="text-2xl md:text-4xl font-black text-slate-900 truncate">
-            -
-          </h4>
-          <div class="space-y-1">
-            <div id="podium1Rate" class="text-4xl md:text-5xl font-black font-mono text-amber-600">0%</div>
-            <p id="podium1Detail" class="text-sm font-bold text-amber-800">0 / 0회 다수파 일치</p>
+        <!-- [우측] 일치율 하위 10명 (낮은순) -->
+        <div class="p-5 md:p-6 rounded-3xl border-2 border-purple-300 bg-white/95 shadow-xl flex flex-col space-y-3">
+          <div class="flex items-center justify-between border-b border-purple-100 pb-3">
+            <div class="flex items-center gap-2.5">
+              <span class="text-3xl">🦄</span>
+              <div>
+                <h3 class="text-lg md:text-xl font-black text-purple-950 flex items-center gap-2">
+                  <span>일치율 하위 10명</span>
+                  <span class="text-xs px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 font-bold">낮은순</span>
+                </h3>
+                <p class="text-xs text-slate-500 font-medium">소수 의견을 빛낸 나만의 독보적 개성왕</p>
+              </div>
+            </div>
+            <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-purple-50 text-purple-700 border border-purple-200">
+              BOTTOM 10
+            </span>
+          </div>
+
+          <!-- 하위 10명 리스트 컨테이너 -->
+          <div id="bottom10ListContainer" class="space-y-2 overflow-y-auto max-h-[560px] pr-1">
+            <div class="p-6 text-center text-slate-400 text-xs">
+              하위 순위 집계 대기 중...
+            </div>
           </div>
         </div>
 
-        <!-- 3위 포디움 카드 -->
-        <div id="podium3" class="order-3 md:order-3 glass-panel p-6 text-center space-y-3 border-2 border-amber-300 shadow-lg bg-white/95 rounded-2xl">
-          <div class="text-4xl">🥉</div>
-          <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 font-black text-xs border border-amber-200">
-            3위 (동메달)
-          </span>
-          <h4 id="podium3Name" class="text-xl md:text-2xl font-black text-slate-900 truncate">
-            -
-          </h4>
-          <div class="space-y-0.5">
-            <div id="podium3Rate" class="text-3xl font-black font-mono text-amber-700">0%</div>
-            <p id="podium3Detail" class="text-xs text-slate-500 font-medium">0 / 0회 다수파</p>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- 4위 ~ 10위 순위 목록 그리드/테이블 -->
-      <div class="bg-white/95 p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider px-1">
-          4위 ~ 10위 랭킹 현황
-        </h3>
-        
-        <div id="rankList4to10" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <!-- 동적으로 4위~10위 항목 삽입 -->
-          <div class="p-3 text-center text-slate-400 text-xs">
-            순위 데이터 집계 대기 중...
-          </div>
-        </div>
       </div>
 
     </section>
