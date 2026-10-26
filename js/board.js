@@ -39,9 +39,14 @@ function initExhibitionBoard() {
   // 초기 테마 및 헤더 렌더링
   applyTopicTheme(boardState.currentTopic);
 
+  const previewParam = params.get("preview");
+
   // 실시간 데이터 구독
   boardStore.subscribe(
     (allNotes, eventType, payload) => {
+      if (previewParam === "1" || previewParam === "zoom") {
+        seedPreviewNotes();
+      }
       renderBoardCounts();
       renderPostitWall(eventType, payload);
 
@@ -77,6 +82,134 @@ function initExhibitionBoard() {
       }
     }
   );
+
+  // 미리보기/스크린샷 모드 (?preview=1 또는 ?preview=zoom)
+  if (previewParam === "1" || previewParam === "zoom") {
+    seedPreviewNotes();
+    renderBoardCounts();
+    renderPostitWall("preview");
+    if (previewParam === "zoom") {
+      const firstNote = getSortedCurrentTopicNotes()[0];
+      if (firstNote) openZoomModal(firstNote.id);
+    }
+  }
+}
+
+function seedPreviewNotes() {
+  const now = Date.now();
+  const sampleNotes = [
+    {
+      id: "sample_1_1",
+      topic: 1,
+      content: "바쁜 2학기 일정 속에서도 열정적으로 연구하고 수업 나눔해주신 교원학습공동체 선생님들 정말 멋지십니다! 덕분에 많은 배움과 영감을 얻어갑니다 👏✨",
+      author: "1학년부 동료교사",
+      color: "yellow",
+      pinStyle: "tape",
+      rotation: -1.8,
+      likes: 12,
+      createdAt: now - 120000
+    },
+    {
+      id: "sample_1_2",
+      topic: 1,
+      content: "선생님들의 깊이 있는 고민과 에듀테크·수업 혁신 사례 발표가 정말 인상 깊었습니다! 우리 학교의 자랑이에요 ❤️",
+      author: "교무기획부",
+      color: "pink",
+      pinStyle: "pin-red",
+      rotation: 1.5,
+      likes: 9,
+      createdAt: now - 240000
+    },
+    {
+      id: "sample_1_3",
+      topic: 1,
+      content: "한 학기 동안 함께 모여 연구하고 실천하신 결과물을 보니 감동입니다. 교원학습공동체 선생님들 모두 고생 많으셨어요! 👍",
+      author: "3학년부 교사",
+      color: "mint",
+      pinStyle: "pin-emerald",
+      rotation: -1.2,
+      likes: 8,
+      createdAt: now - 360000
+    },
+    {
+      id: "sample_1_4",
+      topic: 1,
+      content: "아이들의 배움을 위해 끊임없이 연구하시는 선생님들의 뜨거운 열정에 큰 박수를 보냅니다! 내년에도 함께해요 🌱",
+      author: "영서중 동료선생님",
+      color: "blue",
+      pinStyle: "tape",
+      rotation: 2.1,
+      likes: 7,
+      createdAt: now - 480000
+    },
+    {
+      id: "sample_1_5",
+      topic: 1,
+      content: "발표 자료 하나하나에 정성과 고민이 가득 담겨 있어서 시간 가는 줄 모르고 들었습니다. 정말 수고 많으셨습니다! 💡",
+      author: "2학년부 교사",
+      color: "purple",
+      pinStyle: "pin-gold",
+      rotation: -2.0,
+      likes: 11,
+      createdAt: now - 540000
+    },
+    {
+      id: "sample_2_1",
+      topic: 2,
+      content: "늘 옆에서 따뜻하게 웃어주시고 든든한 버팀목이 되어주시는 영서중 선생님들! 올 한 해도 선생님들과 함께여서 정말 행복했습니다 🥰",
+      author: "2학년부 동료교사",
+      color: "pink",
+      pinStyle: "tape",
+      rotation: -1.5,
+      likes: 15,
+      createdAt: now - 100000
+    },
+    {
+      id: "sample_2_2",
+      topic: 2,
+      content: "추워지는 날씨에 감기 조심하시고, 남은 2학기 학기말 업무와 연말까지 우리 모두 건강 챙기며 힘내요! 영서중 화이팅 🍀",
+      author: "생활안전부",
+      color: "yellow",
+      pinStyle: "pin-gold",
+      rotation: 1.7,
+      likes: 10,
+      createdAt: now - 220000
+    },
+    {
+      id: "sample_2_3",
+      topic: 2,
+      content: "힘들 때마다 따뜻한 커피 한 잔과 격려를 건네주신 동료 선생님들 덕분에 무사히 한 해를 달려올 수 있었습니다. 늘 감사합니다 🌸",
+      author: "신규교사 드림",
+      color: "mint",
+      pinStyle: "pin-emerald",
+      rotation: -2.1,
+      likes: 14,
+      createdAt: now - 310000
+    },
+    {
+      id: "sample_2_4",
+      topic: 2,
+      content: "서로 배려하고 응원하는 우리 영서중학교 최고예요! 연말 따뜻하고 행복하게 보내시길 진심으로 바랍니다 💖",
+      author: "영서중 동료선생님",
+      color: "orange",
+      pinStyle: "pin-red",
+      rotation: 1.4,
+      likes: 9,
+      createdAt: now - 420000
+    },
+    {
+      id: "sample_2_5",
+      topic: 2,
+      content: "올 한 해 아이들을 위해 애쓰신 모든 영서중 선생님들께 존경과 감사의 마음을 전합니다. 모두 고생 많으셨습니다! ✨",
+      author: "교육연구부",
+      color: "purple",
+      pinStyle: "tape",
+      rotation: -1.1,
+      likes: 13,
+      createdAt: now - 500000
+    }
+  ];
+  sampleNotes.forEach((n) => boardStore.notesMap.set(n.id, n));
 }
 
 // ============================================================================
