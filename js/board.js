@@ -73,12 +73,12 @@ function initExhibitionBoard() {
       if (!badge) return;
       if (connected) {
         badge.className =
-          "px-3 py-1.5 text-xs rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5 font-bold shadow-2xs";
-        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>실시간 연결됨</span>`;
+          "px-2.5 sm:px-3 py-1.5 text-xs rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5 font-bold shadow-2xs whitespace-nowrap shrink-0";
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span><span>실시간 연결됨</span>`;
       } else {
         badge.className =
-          "px-3 py-1.5 text-xs rounded-xl bg-amber-50 text-amber-700 border border-amber-200 flex items-center gap-1.5 font-bold shadow-2xs";
-        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500"></span><span>${escapeHtml(label)}</span>`;
+          "px-2.5 sm:px-3 py-1.5 text-xs rounded-xl bg-amber-50 text-amber-700 border border-amber-200 flex items-center gap-1.5 font-bold shadow-2xs whitespace-nowrap shrink-0";
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span><span>${escapeHtml(label)}</span>`;
       }
     }
   );
@@ -246,14 +246,14 @@ function applyTopicTheme(topicNum) {
   if (tab1 && tab2) {
     if (topicNum === 1) {
       tab1.className =
-        "px-4 lg:px-6 py-2.5 rounded-2xl font-black text-sm lg:text-base bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/20 flex items-center gap-2 transition transform scale-[1.02] cursor-pointer";
+        "px-3 sm:px-4 lg:px-6 py-2.5 rounded-2xl font-black text-xs sm:text-sm lg:text-base bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/20 flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer break-keep";
       tab2.className =
-        "px-4 lg:px-6 py-2.5 rounded-2xl font-bold text-sm lg:text-base bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 flex items-center gap-2 transition cursor-pointer";
+        "px-3 sm:px-4 lg:px-6 py-2.5 rounded-2xl font-bold text-xs sm:text-sm lg:text-base bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer break-keep";
     } else {
       tab1.className =
-        "px-4 lg:px-6 py-2.5 rounded-2xl font-bold text-sm lg:text-base bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 flex items-center gap-2 transition cursor-pointer";
+        "px-3 sm:px-4 lg:px-6 py-2.5 rounded-2xl font-bold text-xs sm:text-sm lg:text-base bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer break-keep";
       tab2.className =
-        "px-4 lg:px-6 py-2.5 rounded-2xl font-black text-sm lg:text-base bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-md shadow-rose-500/20 flex items-center gap-2 transition transform scale-[1.02] cursor-pointer";
+        "px-3 sm:px-4 lg:px-6 py-2.5 rounded-2xl font-black text-xs sm:text-sm lg:text-base bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-md shadow-rose-500/20 flex items-center justify-center gap-1.5 sm:gap-2 transition cursor-pointer break-keep";
     }
   }
 
@@ -384,21 +384,11 @@ function renderPostitWall(eventType = "", highlightedNote = null) {
             <p class="postit-body-text postit-clamp w-full font-medium whitespace-pre-wrap">${escapeHtml(note.content)}</p>
           </div>
 
-          <!-- 하단 작성자 & 공감 하트 -->
-          <div class="mt-4 pt-2.5 border-t border-black/10 flex items-center justify-between gap-2">
-            <span class="text-xs sm:text-sm font-black opacity-85 truncate max-w-[70%]">
+          <!-- 하단 작성자 -->
+          <div class="mt-4 pt-2.5 border-t border-black/10 flex items-center justify-end">
+            <span class="text-xs sm:text-sm font-black opacity-85 truncate max-w-full">
               From. ${escapeHtml(authorText)}
             </span>
-
-            <button
-              type="button"
-              onclick="handleQuickLike(event, '${escapeHtml(note.id)}')"
-              class="px-2.5 py-1 rounded-full bg-white/55 hover:bg-white/90 border border-black/10 text-xs font-black flex items-center gap-1 transition active:scale-110 cursor-pointer shrink-0"
-              title="공감 하트 보내기"
-            >
-              <span>❤️</span>
-              <span>${Number(note.likes || 0)}</span>
-            </button>
           </div>
         </article>
       `;
