@@ -6,12 +6,12 @@ set "PATH=%LOCALAPPDATA%\Programs\MinGit\cmd;%LOCALAPPDATA%\Programs\MinGit\ming
 
 echo ========================================================
 echo   🚀 GitHub에 커밋 및 푸시를 진행합니다...
-echo   대상: https://github.com/sjylim0829-commits/Balance.git
+echo   대상: https://github.com/sjylim0829-commits/Community.git
 echo ========================================================
 echo.
 
 git add .
-git commit -m "feat: real-time balance game with Firebase" 2>nul
+git commit -m "feat: Yeongseo Post-it Cheering & Exhibition Board with Firebase" 2>nul
 git branch -M main
 
 echo.

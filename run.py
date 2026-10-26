@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """
-실시간 밸런스 게임 로컬 실행 서버 (run.py)
+영서중학교 2학기말 교원학습공동체 발표회 & 연말 응원 포스트잇 로컬 서버 (run.py)
 외부 의존성 설치 없이 Python 기본 내장 라이브러리로 즉시 구동됩니다.
 """
 
 import os
-import sys
 import webbrowser
 import socket
 from http.server import HTTPServer, SimpleHTTPRequestHandler
@@ -39,19 +38,21 @@ def start_server():
 
     httpd = HTTPServer(server_address, CustomHTTPRequestHandler)
 
-    print("=" * 60)
-    print(" ⚖️  실시간 밸런스 게임 로컬 서버가 시작되었습니다! ")
-    print("=" * 60)
-    print(f" 👤 참가자 화면 (Participant) : http://localhost:{port}/")
-    print(f" 👑 진행자 콘솔 (Host)        : http://localhost:{port}/host.html")
-    print("-" * 60)
-    print(" [안내] Firebase 연동(balance-efed2)이 완료되었습니다.")
+    print("=" * 68)
+    print(" 📌 영서중학교 교원학습공동체 발표회 & 연말 응원 포스트잇 서버 시작! ")
+    print("=" * 68)
+    print(f" ✍️  개별 선생님 작성 페이지 : http://localhost:{port}/write.html")
+    print(f" 🖥️  회의실 모니터 전시 보드 : http://localhost:{port}/board.html")
+    print(f"    - 1번 전시관 바로가기    : http://localhost:{port}/board.html?topic=1")
+    print(f"    - 2번 전시관 바로가기    : http://localhost:{port}/board.html?topic=2")
+    print("-" * 68)
+    print(" [안내] 기존 Firebase DB (balance-efed2)가 그대로 연동되어 있습니다.")
     print(" 서버를 종료하려면 터미널 창을 닫거나 Ctrl + C 를 누르세요.")
-    print("=" * 60)
+    print("=" * 68)
 
     try:
-        webbrowser.open(f"http://localhost:{port}/host.html")
-        webbrowser.open(f"http://localhost:{port}/")
+        webbrowser.open(f"http://localhost:{port}/board.html")
+        webbrowser.open(f"http://localhost:{port}/write.html")
     except Exception:
         pass
 

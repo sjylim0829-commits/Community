@@ -3,439 +3,255 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>실시간 밸런스 게임 | Balance Game</title>
+  <title>영서중학교 따뜻한 응원 포스트잇 작성 | 교원학습공동체 발표회</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Firebase App & Cloud Firestore SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <!-- Canvas Confetti CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- Custom Styles (Light Theme) -->
-  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <!-- Post-it Custom Styles -->
+  <link rel="stylesheet" href="css/postit.css">
 </head>
-<body class="p-4 sm:p-6 flex flex-col justify-between items-center min-h-screen text-slate-800">
+<body class="write-bg min-h-screen text-slate-800 flex flex-col justify-between items-center p-4 sm:p-6">
 
-  <!-- 상단 네비게이션 헤더 -->
-  <header class="w-full max-w-lg flex justify-between items-center py-2">
-    <div class="flex items-center space-x-2">
-      <span class="text-2xl">⚖️</span>
-      <h1 class="brand-title text-xl sm:text-2xl font-black">BALANCE GAME</h1>
+  <!-- 상단 헤더 -->
+  <header class="w-full max-w-lg flex justify-between items-center py-2 mb-2">
+    <div class="flex items-center gap-2.5">
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-rose-500 text-white flex items-center justify-center text-xl shadow-sm">
+        📌
+      </div>
+      <div>
+        <span class="text-[11px] font-extrabold text-amber-700 tracking-tight block">영서중학교 2학기말 교원학습공동체 발표회</span>
+        <h1 class="text-base sm:text-lg font-black text-slate-900 leading-tight">따뜻한 응원 포스트잇</h1>
+      </div>
     </div>
-    <div class="flex items-center space-x-1.5">
-      <!-- 라운드 번호 배지 -->
-      <span id="userRoundBadge" class="hidden px-2.5 py-1 text-xs rounded-full bg-sky-50 text-sky-700 border border-sky-200 font-bold shadow-xs">
-        Q 1/10
-      </span>
-      <!-- 누적 점수 배지 -->
-      <span id="userScoreBadge" class="hidden px-2.5 py-1 text-xs rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-bold shadow-xs flex items-center gap-1">
-        <span>⭐</span><span id="userScoreText">0점</span>
-      </span>
-      <!-- 실시간 접속 상태 배지 -->
-      <span id="connectionBadge" class="px-2.5 py-1 text-xs rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5 font-medium shadow-sm">
+
+    <div class="flex items-center gap-2">
+      <span id="writeConnectionBadge" class="px-2.5 py-1 text-xs rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5 font-bold shadow-xs">
         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span>연결됨</span>
+        <span>연결 중</span>
       </span>
-      <!-- 설정 버튼 -->
-      <button onclick="openConfigModal()" class="p-2 rounded-xl bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 transition shadow-sm" title="Firebase 설정">
-        ⚙️
-      </button>
+      <a
+        href="board.html"
+        class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold shadow-xs transition"
+        title="전시용 보드 보기"
+      >
+        🖥️ 보드
+      </a>
     </div>
   </header>
 
-  <!-- 메인 컨텐츠 영역 -->
-  <main class="w-full max-w-lg my-auto py-4">
+  <!-- 메인 컨테이너 -->
+  <main class="w-full max-w-lg my-auto space-y-4 pb-8">
 
-    <!-- 1. 닉네임 입장 화면 (Join Screen) -->
-    <section id="joinScreen" class="glass-panel p-6 sm:p-8 text-center">
-      <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-tr from-rose-500 to-sky-500 flex items-center justify-center text-3xl shadow-md text-white">
-        🎯
+    <!-- 상단 순차 진행 단계 바 (1번 포스트잇 -> 2번 포스트잇) -->
+    <div class="bg-white/85 backdrop-blur-md p-2 rounded-2xl border border-slate-200/90 shadow-xs flex items-center gap-2">
+      <button
+        type="button"
+        id="stepTab1"
+        onclick="goToStep(1)"
+        class="flex-1 py-2.5 px-3 rounded-xl font-black text-xs sm:text-sm bg-amber-500 text-white shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer"
+      >
+        <span>1️⃣ 교학공 응원</span>
+        <span id="step1SavedCheck" class="hidden px-1.5 py-0.5 text-[10px] rounded-full bg-white text-emerald-700 font-black">완료✓</span>
+      </button>
+
+      <span class="text-slate-300 font-black text-xs">➔</span>
+
+      <button
+        type="button"
+        id="stepTab2"
+        onclick="goToStep(2)"
+        class="flex-1 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm bg-white/80 text-slate-600 border border-slate-200 hover:bg-slate-100 transition flex items-center justify-center gap-1.5 cursor-pointer"
+      >
+        <span>2️⃣ 동료교사 한마디</span>
+        <span id="step2SavedCheck" class="hidden px-1.5 py-0.5 text-[10px] rounded-full bg-white text-emerald-700 font-black">완료✓</span>
+      </button>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- [섹션 A] 포스트잇 작성 화면 (Step 1 & Step 2 공용 순차 에디터) -->
+    <!-- ================================================================== -->
+    <section id="sectionEditor" class="space-y-4">
+
+      <!-- 현재 단계 주제 안내 카드 -->
+      <div class="bg-white/95 backdrop-blur-md p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <span id="topicStepBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-900 border border-amber-300">
+            🔥 첫 번째 포스트잇 (1/2)
+          </span>
+          <span class="text-[11px] font-bold text-slate-400">별도 로그인 없이 바로 작성</span>
+        </div>
+
+        <h2 id="topicTitleText" class="text-lg sm:text-xl font-black text-slate-900 leading-snug break-keep">
+          1. 뜨거운 열정으로 연구에 참여해주신 교원학습공동체 참여 선생님들께 응원 한마디
+        </h2>
+
+        <p id="topicSubtitleText" class="text-xs sm:text-sm text-slate-600 leading-relaxed break-keep">
+          2학기말 교원학습공동체 발표회를 빛내주신 선생님들께 따뜻한 격려와 응원의 마음을 남겨주세요!
+        </p>
       </div>
-      <h2 class="text-2xl font-black text-slate-900 mb-1">실시간 밸런스 게임</h2>
-      <p class="text-slate-500 text-sm mb-6">닉네임을 입력하고 실시간 대전에 참여하세요!</p>
 
-      <form id="joinForm" onsubmit="handleJoinGame(event)" class="space-y-4">
-        <div>
-          <label class="block text-left text-xs font-bold text-slate-600 mb-1 ml-1">참가자 닉네임</label>
-          <input 
-            type="text" 
-            id="nicknameInput" 
-            placeholder="예: 치킨러버, 밸런스장인" 
-            maxlength="15" 
-            required
-            class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-300 focus:bg-white focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 text-slate-900 placeholder-slate-400 outline-none transition"
-          >
+      <!-- 포스트잇 색상 선택 바 -->
+      <div class="bg-white/90 backdrop-blur-md px-4 py-3 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-between">
+        <span class="text-xs font-extrabold text-slate-600 flex items-center gap-1.5">
+          <span>🎨</span>
+          <span>포스트잇 색상</span>
+        </span>
+        <div id="colorSwatchContainer" class="flex items-center gap-2">
+          <!-- JS에서 6가지 파스텔 컬러 렌더링 -->
+        </div>
+      </div>
+
+      <!-- 실제 포스트잇 모양의 입력 페이지 -->
+      <form id="postitForm" onsubmit="handleSubmitCurrentStep(event)" class="space-y-4 pt-2">
+        <div id="postitEditorCard" class="postit-editor-card postit-yellow">
+          <!-- 상단 테이프 또는 압정 장식 -->
+          <div id="editorPinDecor">
+            <div class="postit-tape"></div>
+          </div>
+
+          <!-- 포스트잇 상단 수신자 라벨 & 글자수 -->
+          <div class="flex justify-between items-center border-b border-black/10 pb-2.5 mb-3">
+            <span id="innerPostitTopicLabel" class="text-xs sm:text-sm font-black opacity-80">
+              TO. 뜨거운 열정의 교원학습공동체 선생님들께
+            </span>
+            <span id="charCountText" class="text-[11px] font-bold opacity-60 font-mono">
+              0 / 300자
+            </span>
+          </div>
+
+          <!-- 포스트잇 본문 입력란 -->
+          <textarea
+            id="postitContentInput"
+            rows="6"
+            maxlength="300"
+            oninput="handleTextareaInput()"
+            placeholder="여기에 따뜻한 응원의 말을 적어주세요..."
+            class="w-full bg-transparent border-none outline-none resize-none text-base sm:text-lg font-medium leading-relaxed placeholder-black/35 postit-lined-text"
+          ></textarea>
+
+          <!-- 포스트잇 하단 보내는 사람 (선택 사항) -->
+          <div class="mt-3 pt-3 border-t border-black/10 flex items-center justify-end gap-2">
+            <label for="postitAuthorInput" class="text-xs sm:text-sm font-black opacity-75 shrink-0">
+              From.
+            </label>
+            <input
+              type="text"
+              id="postitAuthorInput"
+              maxlength="20"
+              placeholder="성함 또는 별칭 (선택 · 익명 가능)"
+              oninput="syncInputsToState()"
+              class="w-48 sm:w-56 px-2.5 py-1.5 rounded-lg bg-white/55 focus:bg-white/90 border border-black/15 text-xs sm:text-sm font-bold text-slate-900 placeholder-black/40 outline-none transition text-right"
+            >
+          </div>
         </div>
 
-        <div>
-          <label class="block text-left text-xs font-bold text-slate-600 mb-1 ml-1 flex justify-between">
-            <span>방 코드 (Room Code)</span>
-            <span id="roomCodeAutoNotice" class="text-[11px] text-emerald-600 font-bold hidden">✓ 초대 링크로 자동 입력됨</span>
-            <span id="roomCodeDefaultNotice" class="text-[11px] text-sky-600 font-normal">* 진행자가 설정한 코드</span>
-          </label>
-          <input 
-            type="text" 
-            id="roomInput" 
-            placeholder="진행자에게 전달받은 방 코드 (예: 1234, default)" 
-            required
-            class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-300 focus:bg-white focus:border-sky-500 font-mono text-slate-900 placeholder-slate-400 outline-none transition"
-          >
+        <!-- 빠른 응원 문구 추천 (원터치 입력 도우미) -->
+        <div class="bg-white/85 backdrop-blur-md p-3.5 rounded-2xl border border-slate-200/80 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-slate-600">💡 터치하면 문구가 바로 입력돼요 (직접 수정 가능)</span>
+          </div>
+          <div id="quickChipsContainer" class="flex flex-wrap gap-1.5">
+            <!-- JS에서 추천 문구 칩 렌더링 -->
+          </div>
         </div>
 
-        <button 
-          type="submit" 
-          class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-rose-500 via-purple-600 to-sky-500 hover:from-rose-600 hover:to-sky-600 text-white font-black text-lg shadow-lg hover:shadow-purple-500/20 transition transform active:scale-95"
-        >
-          게임 참여하기 🚀
-        </button>
+        <!-- 하단 제출 & 이전/건너뛰기 버튼 -->
+        <div class="space-y-2.5 pt-1">
+          <div class="flex items-center gap-2.5">
+            <button
+              type="button"
+              id="btnPrevStep"
+              onclick="goToStep(1)"
+              class="hidden px-4 py-4 rounded-2xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-sm shadow-xs transition cursor-pointer shrink-0"
+            >
+              👈 1번으로
+            </button>
+
+            <button
+              type="submit"
+              id="btnPrimarySubmit"
+              class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-base sm:text-lg shadow-lg shadow-amber-500/20 transition transform active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>📌 1번 포스트잇 붙이고 다음(2번)으로 👉</span>
+            </button>
+          </div>
+
+          <div class="text-center">
+            <button
+              type="button"
+              id="btnSkipStep"
+              onclick="handleSkipStep()"
+              class="text-xs font-bold text-slate-500 hover:text-slate-800 underline underline-offset-4 py-1.5 px-3 transition cursor-pointer"
+            >
+              2번 포스트잇(동료 선생님께 한마디) 먼저 작성하기 →
+            </button>
+          </div>
+        </div>
       </form>
     </section>
 
-    <!-- 2. 대기실 화면 (Waiting Screen) -->
-    <section id="waitingScreen" class="glass-panel p-6 sm:p-8 text-center hidden">
-      <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-100 flex items-center justify-center text-3xl animate-bounce border border-slate-200">
-        ⏳
-      </div>
-      <h2 class="text-2xl font-black text-slate-900 mb-2">진행자 시작 대기 중</h2>
-      <p class="text-slate-600 text-sm mb-6 leading-relaxed">
-        환영합니다, <strong id="displayNickname" class="font-bold text-sky-600"></strong> 님!<br>
-        진행자가 다음 밸런스 질문을 시작하면 자동으로 화면이 전환됩니다.
-      </p>
-
-      <div class="py-3 px-5 rounded-2xl bg-slate-50 border border-slate-200 inline-flex items-center gap-3 shadow-sm">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-        <span class="text-xs font-semibold text-slate-600">현재 방: <strong id="displayRoomName" class="text-slate-900 text-sm">default</strong></span>
-      </div>
-    </section>
-
-    <!-- 3. 실시간 투표 화면 (Voting Screen) -->
-    <section id="votingScreen" class="space-y-4 hidden">
-      
-      <!-- 상단 타이머 바 -->
-      <div class="glass-panel p-4 flex items-center justify-between">
-        <div class="flex items-center space-x-2">
-          <span class="text-xl">⏱️</span>
-          <span class="text-xs text-slate-500 uppercase tracking-wider font-bold">남은 시간</span>
-        </div>
-        <div class="flex items-center space-x-3">
-          <!-- 프로그레스 바 -->
-          <div class="w-36 sm:w-48 h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
-            <div id="timerProgressBar" class="h-full bg-gradient-to-r from-emerald-500 to-rose-500 transition-all duration-100 ease-linear" style="width: 100%;"></div>
-          </div>
-          <span id="timerText" class="font-mono font-black text-2xl text-slate-900">15s</span>
-        </div>
-      </div>
-
-      <!-- 질문 카드 -->
-      <div class="glass-panel p-5 text-center">
-        <span id="questionCategory" class="px-3 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-700 border border-purple-200 shadow-sm">
-          밸런스 질문
-        </span>
-        <h2 id="questionTitle" class="text-xl sm:text-2xl font-black text-slate-900 mt-3 leading-snug">
-          질문 로딩 중...
-        </h2>
-      </div>
-
-      <!-- 두 가지 선택지 (A vs B) -->
-      <div class="grid grid-cols-1 gap-4">
-        
-        <!-- Option A (Red) -->
-        <div 
-          id="cardOptionA" 
-          onclick="handleSelectOption('A')" 
-          class="choice-card choice-card-a rounded-2xl p-5 sm:p-6 flex items-center justify-between"
-        >
-          <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-xl bg-rose-500 text-white flex items-center justify-center font-black text-xl shadow-md">
-              A
-            </div>
-            <div class="text-left pr-2">
-              <span class="text-xs text-rose-600 font-bold block mb-0.5">선택지 1</span>
-              <p id="textOptionA" class="text-base sm:text-lg font-bold text-slate-900 leading-tight">
-                선택지 A
-              </p>
-            </div>
-          </div>
-          <div id="checkA" class="w-7 h-7 rounded-full bg-rose-500 text-white flex items-center justify-center text-sm font-bold shadow hidden">
-            ✓
-          </div>
+    <!-- ================================================================== -->
+    <!-- [섹션 B] 1·2번 포스트잇 작성 완료 화면 (Step 3) -->
+    <!-- ================================================================== -->
+    <section id="sectionComplete" class="hidden space-y-5">
+      <div class="bg-white/95 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-lg text-center space-y-4">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-amber-400 to-rose-500 text-white flex items-center justify-center text-3xl shadow-md">
+          🎉
         </div>
 
-        <!-- VS 구분선 -->
-        <div class="relative flex py-1 items-center justify-center">
-          <div class="flex-grow border-t border-slate-200"></div>
-          <span class="flex-shrink mx-4 vs-circle px-3 py-1 rounded-full text-xs font-black tracking-widest text-slate-500">VS</span>
-          <div class="flex-grow border-t border-slate-200"></div>
-        </div>
-
-        <!-- Option B (Blue) -->
-        <div 
-          id="cardOptionB" 
-          onclick="handleSelectOption('B')" 
-          class="choice-card choice-card-b rounded-2xl p-5 sm:p-6 flex items-center justify-between"
-        >
-          <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-xl bg-sky-600 text-white flex items-center justify-center font-black text-xl shadow-md">
-              B
-            </div>
-            <div class="text-left pr-2">
-              <span class="text-xs text-sky-600 font-bold block mb-0.5">선택지 2</span>
-              <p id="textOptionB" class="text-base sm:text-lg font-bold text-slate-900 leading-tight">
-                선택지 B
-              </p>
-            </div>
-          </div>
-          <div id="checkB" class="w-7 h-7 rounded-full bg-sky-600 text-white flex items-center justify-center text-sm font-bold shadow hidden">
-            ✓
-          </div>
-        </div>
-      </div>
-
-      <!-- 마감 안내 (타이머 0s 시 표시) -->
-      <div id="votingClosedNotice" class="hidden p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold text-center animate-pulse flex items-center justify-center gap-2">
-        <span>⌛</span>
-        <span>투표가 마감되었습니다! 참가자들의 선택을 집계 중입니다...</span>
-      </div>
-
-      <!-- 실시간 팁 -->
-      <p class="text-center text-xs text-slate-500 pt-1">
-        💡 타이머가 종료될 때까지 자유롭게 선택을 바꿀 수 있습니다.
-      </p>
-    </section>
-
-    <!-- 4. 결과 화면 (Result Screen - Background View) -->
-    <section id="resultScreen" class="glass-panel p-6 sm:p-8 text-center space-y-6 hidden">
-      
-      <!-- 인라인 판정 결과 (모달을 닫은 뒤에도 확인 가능) -->
-      <div id="inlineVerdictCard" class="p-5 rounded-2xl transition-all shadow-sm">
-        <div id="inlineVerdictIcon" class="text-4xl mb-2">👑</div>
-        <h3 id="inlineVerdictTitle" class="text-xl sm:text-2xl font-black mb-1">
-          다수파 승리!
-        </h3>
-        <p id="inlineVerdictDesc" class="text-sm font-medium opacity-90">
-          당신의 선택은 많은 사람들과 통했습니다!
-        </p>
-      </div>
-
-      <!-- 질문 요약 -->
-      <div class="text-left py-2 border-b border-slate-200">
-        <span class="text-xs text-slate-500 font-bold block">이번 라운드 질문</span>
-        <h4 id="resultQuestionTitle" class="text-base font-bold text-slate-900 mt-0.5">질문 내용</h4>
-      </div>
-
-      <!-- 득표율 게이지 바 -->
-      <div class="space-y-4 text-left">
-        
-        <!-- A 결과 바 -->
-        <div>
-          <div class="flex justify-between items-center text-sm font-bold mb-1">
-            <span class="text-rose-600 flex items-center gap-1.5">
-              <span>[A]</span>
-              <span id="resultOptionAText" class="truncate max-w-[200px]">선택지 A</span>
-            </span>
-            <span id="resultOptionAPercent" class="text-rose-700 font-mono">0% (0명)</span>
-          </div>
-          <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-rose-200">
-            <div id="resultGaugeA" class="vote-gauge h-full rounded-full bg-gradient-to-r from-rose-500 to-rose-400" style="width: 0%;"></div>
-          </div>
-        </div>
-
-        <!-- B 결과 바 -->
-        <div>
-          <div class="flex justify-between items-center text-sm font-bold mb-1">
-            <span class="text-sky-600 flex items-center gap-1.5">
-              <span>[B]</span>
-              <span id="resultOptionBText" class="truncate max-w-[200px]">선택지 B</span>
-            </span>
-            <span id="resultOptionBPercent" class="text-sky-700 font-mono">0% (0명)</span>
-          </div>
-          <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-sky-200">
-            <div id="resultGaugeB" class="vote-gauge h-full rounded-full bg-gradient-to-r from-sky-500 to-sky-400" style="width: 0%;"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- [요구사항 3] 인라인 누적 점수 상태 바 -->
-      <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center text-xs">
-        <span class="text-slate-600 font-bold flex items-center gap-1.5">
-          <span>⭐</span> <span>현재 나의 누적 점수:</span>
-        </span>
-        <span class="font-black text-slate-900">
-          <strong id="inlineCumulativeScore" class="text-sky-600 text-sm font-mono">0</strong>점 / 100점
-        </span>
-      </div>
-
-      <!-- 다음 라운드 안내 -->
-      <div class="pt-2 border-t border-slate-200">
-        <p class="text-xs text-slate-500 animate-pulse font-medium">
-          ⏳ 진행자가 다음 밸런스 게임을 준비하고 있습니다...
-        </p>
-      </div>
-    </section>
-
-    <!-- 5. 최종 결과 대시보드 화면 (Final Screen - [요구사항 4]) -->
-    <section id="finalScreen" class="glass-panel p-6 sm:p-8 text-center space-y-5 hidden">
-      <!-- 헤더 배너 -->
-      <div class="p-6 rounded-2xl bg-gradient-to-br from-indigo-600 via-purple-600 to-rose-600 text-white shadow-xl space-y-3">
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold">
-          <span>🏫</span> 우리학교 교직원 공감도 분석
-        </div>
-        <h2 id="finalMatchMessage" class="text-2xl sm:text-3xl font-black leading-tight tracking-tight">
-          선생님은 우리학교의 대다수와 <span id="finalMatchPercent" class="text-amber-300 underline decoration-wavy decoration-amber-400 font-mono">0%</span> 일치해요!
-        </h2>
-        <div class="pt-1 flex flex-wrap justify-center gap-2">
-          <span id="finalScoreTag" class="px-4 py-1.5 rounded-full bg-white/25 backdrop-blur-md text-sm font-black border border-white/30 shadow-xs">
-            최종 점수: 0점 / 100점
+        <div class="space-y-1.5">
+          <span class="inline-block px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
+            전시 보드 부착 완료!
           </span>
-        </div>
-      </div>
-
-      <!-- 교사 공감 페르소나 카드 -->
-      <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-left flex items-center gap-4">
-        <div id="finalPersonaIcon" class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-700 border border-amber-200 flex items-center justify-center text-3xl shrink-0 shadow-xs">
-          🏆
-        </div>
-        <div>
-          <span class="text-[11px] font-bold text-sky-600 block uppercase tracking-wider">나의 교사 공감 유형</span>
-          <h3 id="finalPersonaTitle" class="text-lg font-black text-slate-900 leading-tight">
-            교무실 핵인싸 선생님
-          </h3>
-          <p id="finalPersonaDesc" class="text-xs text-slate-500 mt-1 leading-relaxed">
-            동료 선생님들의 마음을 꿰뚫어보는 영혼의 단짝! 학교 분위기를 이끄는 최고의 공감 리더입니다.
+          <h2 class="text-2xl font-black text-slate-900">
+            따뜻한 포스트잇이 전달되었습니다!
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed break-keep">
+            선생님께서 남겨주신 소중한 응원 메시지가 회의실 대형 모니터 전시 보드에 실시간으로 붙여졌습니다 ❤️
           </p>
         </div>
-      </div>
 
-      <!-- 10문항 복기 리스트 -->
-      <div class="space-y-2 text-left pt-1">
-        <div class="flex justify-between items-center px-1">
-          <h4 class="text-xs font-bold text-slate-700">10문항 내 선택 내역</h4>
-          <span class="text-[11px] text-slate-400">다수파 매칭당 +10점</span>
+        <!-- 내가 작성한 1번 / 2번 포스트잇 미리보기 및 수정 -->
+        <div id="completedNotesPreview" class="space-y-5 pt-3">
+          <!-- JS에서 렌더링 -->
         </div>
-        <div id="finalHistoryList" class="space-y-2 max-h-60 overflow-y-auto pr-1 text-xs">
-          <!-- JS 동적 주입 -->
-        </div>
-      </div>
 
-      <!-- 다시 하기 안내 -->
-      <div class="pt-3 border-t border-slate-200">
-        <p class="text-xs text-slate-500 font-medium">
-          참여해 주셔서 감사합니다! 진행자가 다음 게임을 시작하면 자동으로 대기실로 이동합니다.
-        </p>
+        <!-- 추가 작업 버튼 -->
+        <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-2.5">
+          <button
+            type="button"
+            onclick="startNewPostitSet()"
+            class="flex-1 py-3.5 px-4 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black text-sm shadow-md transition cursor-pointer"
+          >
+            ➕ 새 포스트잇 한 장 더 쓰기
+          </button>
+          <a
+            href="board.html"
+            class="flex-1 py-3.5 px-4 rounded-2xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-black text-sm transition flex items-center justify-center gap-1.5"
+          >
+            <span>🖥️ 전체 포스트잇 전시 보드 보기</span>
+          </a>
+        </div>
       </div>
     </section>
 
   </main>
 
-  <!-- [요구사항 2] 하단 푸터 (진행자 화면 링크 완전 제거) -->
-  <footer class="w-full max-w-lg text-center text-xs text-slate-400 py-3">
-    <span>실시간 밸런스 게임 Web Service</span>
-    <span class="mx-2">•</span>
-    <span>참가자 전용 화면</span>
+  <!-- 하단 푸터 -->
+  <footer class="w-full max-w-lg text-center py-3 text-[11px] text-slate-400 font-medium">
+    영서중학교 2학기말 교원학습공동체 발표회 · 실시간 나눔 보드
   </footer>
 
-  <!-- [요구사항 3] 다수파 / 소수파 판정 팝업 모달 (Result Popup Modal) -->
-  <div id="resultModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
-    <div class="glass-panel w-full max-w-sm p-6 sm:p-7 text-center space-y-4 animate-bounceIn border border-slate-200 shadow-2xl">
-      
-      <!-- 다수파 / 소수파 아이콘 & 배지 -->
-      <div id="modalVerdictBox" class="p-5 rounded-2xl text-white shadow-lg">
-        <div id="modalVerdictIcon" class="text-5xl mb-2">👑</div>
-        <h3 id="modalVerdictTitle" class="text-2xl font-black mb-1">다수파 승리!</h3>
-        <p id="modalVerdictDesc" class="text-xs font-medium opacity-95">당신의 선택이 대중의 선택과 통했습니다!</p>
-        <div id="modalRoundScoreBadge" class="mt-2.5 inline-block px-3 py-1 rounded-full bg-white/25 backdrop-blur-sm text-xs font-black">
-          +10점 획득! 🎯
-        </div>
-      </div>
-
-      <!-- 내가 고른 선택지 요약 -->
-      <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-left text-xs space-y-2">
-        <div class="flex justify-between items-center">
-          <span class="text-slate-500">내가 선택한 항목:</span>
-          <strong id="modalMyChoiceBadge" class="px-2 py-0.5 rounded text-white font-bold bg-rose-500">[A] 선택</strong>
-        </div>
-        <div class="flex justify-between items-center">
-          <span class="text-slate-500">선택 득표율:</span>
-          <strong id="modalMyChoicePercent" class="text-slate-900 font-mono text-sm">75%</strong>
-        </div>
-
-        <!-- [요구사항 3] 누적 점수 게이지 바 -->
-        <div class="pt-2 border-t border-slate-200">
-          <div class="flex justify-between items-center mb-1">
-            <span class="text-slate-600 font-bold">내 누적 점수:</span>
-            <span class="font-bold text-slate-900"><strong id="modalCumulativeScore" class="text-sky-600 font-black text-sm">0</strong> / 100점</span>
-          </div>
-          <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-            <div id="modalScoreBar" class="h-full bg-gradient-to-r from-sky-500 to-emerald-500 transition-all duration-300" style="width: 0%;"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 모달 닫기 버튼 -->
-      <button 
-        onclick="closeResultModal()" 
-        class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md transition transform active:scale-95"
-      >
-        확인 및 상세 투표율 보기 👍
-      </button>
-    </div>
-  </div>
-
-  <!-- [요구사항 1] 강퇴 알림 모달 (Kicked Modal) -->
-  <div id="kickedModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
-    <div class="glass-panel w-full max-w-sm p-6 text-center space-y-4 shadow-2xl border-rose-200">
-      <div class="w-14 h-14 mx-auto rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-2xl font-bold">
-        🚫
-      </div>
-      <h3 class="text-xl font-black text-slate-900">퇴장 안내</h3>
-      <p class="text-slate-600 text-xs leading-relaxed">
-        진행자에 의해 방에서 퇴장 처리되었습니다.<br>
-        게임을 다시 이용하시려면 새 닉네임으로 재참여해 주세요.
-      </p>
-      <button 
-        onclick="handleKickedConfirm()" 
-        class="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm shadow"
-      >
-        처음 화면으로 돌아가기
-      </button>
-    </div>
-  </div>
-
-  <!-- Firebase 설정 모달 (밝은 톤) -->
-  <div id="configModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
-    <div class="glass-panel w-full max-w-md p-6 space-y-4">
-      <div class="flex justify-between items-center border-b border-slate-200 pb-3">
-        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-          <span>🔥</span> Firebase 설정
-        </h3>
-        <button onclick="closeConfigModal()" class="text-slate-400 hover:text-slate-700 text-xl">✕</button>
-      </div>
-      <p class="text-xs text-slate-500 leading-relaxed">
-        현재 대상 프로젝트: <strong class="text-amber-600 font-mono">balance-efed2</strong><br>
-        Firebase 설정이 이미 코드에 내장되어 있어 별도 설정 없이 즉시 동작합니다.
-      </p>
-
-      <div class="space-y-2.5 pt-1">
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-0.5">Project ID</label>
-          <input type="text" id="cfgProjectId" value="balance-efed2" class="w-full px-3 py-1.5 text-xs rounded-lg bg-slate-50 border border-slate-300 text-slate-900 font-mono outline-none focus:border-sky-500">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-0.5">API Key</label>
-          <input type="text" id="cfgApiKey" placeholder="AIzaSy..." class="w-full px-3 py-1.5 text-xs rounded-lg bg-slate-50 border border-slate-300 text-slate-900 outline-none focus:border-sky-500">
-        </div>
-      </div>
-
-      <div class="flex justify-end space-x-2 pt-2 border-t border-slate-200">
-        <button onclick="closeConfigModal()" class="px-4 py-2 rounded-lg bg-slate-100 text-slate-600 text-sm hover:bg-slate-200">닫기</button>
-        <button onclick="saveConfigModal()" class="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-sm font-semibold shadow">저장</button>
-      </div>
-    </div>
-  </div>
+  <!-- 토스트 알림 -->
+  <div id="writeToast" class="hidden"></div>
 
   <!-- Scripts -->
-  <script src="js/default_data.js"></script>
   <script src="js/config.js"></script>
-  <script src="js/participant.js"></script>
+  <script src="js/postit_core.js"></script>
+  <script src="js/write.js"></script>
 </body>
 </html>

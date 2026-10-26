@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>전시 보드 | 영서중학교 2학기말 교원학습공동체 발표회 & 연말 응원 한마디</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Firebase App & Cloud Firestore SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <!-- Custom Post-it & Board Styles -->
+  <link rel="stylesheet" href="css/postit.css">
+</head>
+<body class="board-theme-1 min-h-screen text-slate-800 flex flex-col">
+
+  <!-- ==================================================================== -->
+  <!-- 상단 대형 모니터 네비게이션 헤더 (전시 페이지 1 / 전시 페이지 2 전환) -->
+  <!-- ==================================================================== -->
+  <header class="sticky top-0 z-30 w-full bg-white/90 backdrop-blur-md border-b border-slate-200/90 px-4 lg:px-8 py-3 shadow-xs">
+    <div class="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3">
+
+      <!-- 좌측: 학교 및 행사 타이틀 -->
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500 text-white flex items-center justify-center text-2xl shadow-sm">
+          🏫
+        </div>
+        <div>
+          <span class="text-xs font-extrabold text-amber-700 tracking-tight block">
+            영서중학교 2학기말 교원학습공동체 발표회
+          </span>
+          <h1 class="text-lg lg:text-xl font-black text-slate-900 tracking-tight">
+            마음을 잇는 실시간 포스트잇 전시 보드
+          </h1>
+        </div>
+      </div>
+
+      <!-- 중앙: 1번 전시 페이지 / 2번 전시 페이지 독립 전환 탭 -->
+      <nav class="flex items-center gap-2 bg-slate-100/90 p-1.5 rounded-2xl border border-slate-200/90" aria-label="전시 페이지 선택">
+        <button
+          type="button"
+          id="exhibitTab1"
+          onclick="switchExhibitionTopic(1)"
+          class="px-4 lg:px-6 py-2.5 rounded-2xl font-black text-sm lg:text-base bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/20 flex items-center gap-2 transition cursor-pointer"
+        >
+          <span>🔥 1. 교원학습공동체 응원 전시관</span>
+          <span id="tabCountBadge1" class="px-2 py-0.5 text-xs rounded-full bg-white/25 text-white font-extrabold">0</span>
+        </button>
+
+        <button
+          type="button"
+          id="exhibitTab2"
+          onclick="switchExhibitionTopic(2)"
+          class="px-4 lg:px-6 py-2.5 rounded-2xl font-bold text-sm lg:text-base bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 flex items-center gap-2 transition cursor-pointer"
+        >
+          <span>💝 2. 영서중 동료선생님 한마디 전시관</span>
+          <span id="tabCountBadge2" class="px-2 py-0.5 text-xs rounded-full bg-slate-200 text-slate-700 font-extrabold">0</span>
+        </button>
+      </nav>
+
+      <!-- 우측: 진행 및 화면 제어 도구 -->
+      <div class="flex items-center gap-2">
+        <!-- 실시간 연결 상태 -->
+        <span id="boardConnectionBadge" class="px-3 py-1.5 text-xs rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5 font-bold shadow-2xs">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>연결 중</span>
+        </span>
+
+        <!-- QR 코드 크게 띄우기 -->
+        <button
+          type="button"
+          onclick="openQrModal()"
+          class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs lg:text-sm font-black shadow-sm transition flex items-center gap-1.5 cursor-pointer"
+          title="선생님 참여용 QR 코드 크게 보기"
+        >
+          <span>📱</span>
+          <span>참여 QR 크게 보기</span>
+        </button>
+
+        <!-- 랜덤 뽑기 -->
+        <button
+          type="button"
+          onclick="pickRandomPostit()"
+          class="px-3 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs lg:text-sm font-bold shadow-2xs transition flex items-center gap-1.5 cursor-pointer"
+          title="현재 전시관에서 랜덤으로 포스트잇 하나를 뽑아 확대합니다"
+        >
+          <span>🎲</span>
+          <span class="hidden xl:inline">랜덤 뽑기</span>
+        </button>
+
+        <!-- PC에서 바로 작성 -->
+        <button
+          type="button"
+          onclick="openQuickWriteModal()"
+          class="px-3 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs lg:text-sm font-bold shadow-2xs transition flex items-center gap-1.5 cursor-pointer"
+          title="모니터 화면에서 바로 포스트잇 붙이기"
+        >
+          <span>✍️</span>
+          <span class="hidden xl:inline">바로 쓰기</span>
+        </button>
+
+        <!-- 효과음 토글 -->
+        <button
+          type="button"
+          onclick="toggleBoardSound()"
+          class="px-3 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold shadow-2xs transition flex items-center gap-1 cursor-pointer"
+          title="새 포스트잇 도착 알림음 켜기/끄기"
+        >
+          <span id="boardSoundIcon">🔊</span>
+          <span id="boardSoundText" class="hidden 2xl:inline">소리 켬</span>
+        </button>
+
+        <!-- 관리 / 엑셀 다운로드 -->
+        <button
+          type="button"
+          onclick="openAdminModal()"
+          class="px-3 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold shadow-2xs transition cursor-pointer"
+          title="엑셀 저장 및 전시관 분리/초기화 메뉴"
+        >
+          ⚙️
+        </button>
+
+        <!-- 전체화면 -->
+        <button
+          type="button"
+          onclick="toggleBoardFullscreen()"
+          class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-2xs transition flex items-center gap-1 cursor-pointer"
+          title="전체화면 전환 (F11)"
+        >
+          <span>⛶</span>
+          <span class="hidden xl:inline">전체화면</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ==================================================================== -->
+  <!-- 메인 전시 보드 영역 -->
+  <!-- ==================================================================== -->
+  <main class="flex-1 w-full max-w-[1600px] mx-auto px-4 lg:px-8 pt-6 pb-16 space-y-6">
+
+    <!-- 현재 전시관 주제 배너 및 보기 옵션 바 -->
+    <section id="exhibitBannerBox" class="w-full rounded-3xl bg-gradient-to-r from-amber-50/95 via-white/95 to-orange-50/95 border-2 border-amber-200/90 shadow-md px-6 py-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 backdrop-blur-md">
+      <div class="space-y-1.5">
+        <div class="flex flex-wrap items-center gap-2">
+          <span id="exhibitBannerBadge" class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-black bg-amber-500 text-white shadow-2xs">
+            🔥 전시 페이지 1 · 교원학습공동체 응원 보드
+          </span>
+          <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-white/90 text-slate-700 border border-slate-200">
+            현재 부착된 포스트잇 <strong id="currentTopicCountText" class="text-rose-600 font-black">0장</strong>
+          </span>
+          <span class="text-xs font-bold text-slate-500 hidden sm:inline">
+            💡 포스트잇을 클릭하면 크게 확대되어 내용을 함께 읽을 수 있습니다!
+          </span>
+        </div>
+
+        <h2 id="exhibitBannerTitle" class="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 tracking-tight leading-snug break-keep">
+          1. 뜨거운 열정으로 연구에 참여해주신 교원학습공동체 참여 선생님들께 응원 한마디
+        </h2>
+
+        <p id="exhibitBannerSubtitle" class="text-xs sm:text-sm text-slate-600 font-medium">
+          2학기말 교원학습공동체 발표회를 빛내주신 선생님들께 따뜻한 격려와 응원의 마음을 남겨주세요!
+        </p>
+      </div>
+
+      <!-- 우측: 포스트잇 크기 조절 & 정렬 필터 -->
+      <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+        <!-- 카드 크기 조절 -->
+        <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+          <span class="text-[11px] font-bold text-slate-500 px-2">크기</span>
+          <button
+            type="button"
+            id="btnSize_large"
+            onclick="setGridSize('large')"
+            class="px-2.5 py-1 rounded-lg bg-transparent hover:bg-slate-200 text-slate-600 text-xs font-bold transition cursor-pointer"
+          >
+            크게
+          </button>
+          <button
+            type="button"
+            id="btnSize_normal"
+            onclick="setGridSize('normal')"
+            class="px-2.5 py-1 rounded-lg bg-slate-900 text-white text-xs font-bold transition cursor-pointer"
+          >
+            보통
+          </button>
+          <button
+            type="button"
+            id="btnSize_compact"
+            onclick="setGridSize('compact')"
+            class="px-2.5 py-1 rounded-lg bg-transparent hover:bg-slate-200 text-slate-600 text-xs font-bold transition cursor-pointer"
+          >
+            한눈에
+          </button>
+        </div>
+
+        <!-- 정렬 순서 -->
+        <select
+          id="boardSortSelect"
+          onchange="handleSortChange(this)"
+          aria-label="포스트잇 정렬 방식"
+          class="px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 shadow-2xs outline-none cursor-pointer"
+        >
+          <option value="newest">🕒 최신 등록순</option>
+          <option value="likes">❤️ 공감 많은순</option>
+          <option value="oldest">🌱 처음 등록순</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- 포스트잇이 아직 없을 때 표시되는 대기 안내 카드 -->
+    <!-- ================================================================== -->
+    <section id="boardEmptyState" class="w-full py-12 flex flex-col items-center justify-center">
+      <div class="max-w-2xl w-full bg-white/90 backdrop-blur-md rounded-3xl border-2 border-dashed border-slate-300 p-8 sm:p-10 text-center space-y-6 shadow-sm">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-xs font-black">
+          <span>📷 스마트폰 카메라로 QR 코드를 스캔해 주세요!</span>
+        </div>
+
+        <h3 id="emptyStateTopicTitle" class="text-xl sm:text-2xl font-black text-slate-800 break-keep">
+          아직 이 전시관에 붙은 포스트잇이 없습니다.
+        </h3>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+          <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-xs">
+            <img
+              id="emptyQrImg"
+              src=""
+              alt="참여 QR 코드"
+              class="w-40 h-40 object-contain"
+            >
+          </div>
+          <div class="text-left space-y-2.5 max-w-xs">
+            <p class="text-sm font-black text-slate-900">
+              선생님들의 첫 번째 응원 포스트잇을 기다리고 있어요!
+            </p>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              별도의 로그인 없이 QR 코드를 찍으면 <strong>1번(교원학습공동체 응원)</strong>과 <strong>2번(동료선생님께 따뜻한 한마디)</strong> 포스트잇을 순서대로 작성하실 수 있습니다.
+            </p>
+            <div class="pt-1 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onclick="openQrModal()"
+                class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-black transition cursor-pointer"
+              >
+                📱 QR 코드 크게 띄우기
+              </button>
+              <button
+                type="button"
+                onclick="openQuickWriteModal()"
+                class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition cursor-pointer"
+              >
+                ✍️ 첫 포스트잇 직접 작성하기
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- 포스트잇 전시 그리드 월 (Post-it Exhibition Wall) -->
+    <!-- ================================================================== -->
+    <section id="postitWallGrid" class="postit-wall-grid size-normal hidden">
+      <!-- JS에서 실시간 포스트잇 카드 렌더링 -->
+    </section>
+
+  </main>
+
+  <!-- ==================================================================== -->
+  <!-- 우측 하단 플로팅 미니 QR 위젯 (언제든 스마트폰 스캔 가능) -->
+  <!-- ==================================================================== -->
+  <aside class="fixed bottom-5 right-5 z-20 bg-white/95 backdrop-blur-md rounded-2xl border-2 border-slate-200 shadow-xl p-3 w-48 transition-all">
+    <div class="flex items-center justify-between pb-1.5 border-b border-slate-100">
+      <span class="text-xs font-black text-slate-800 flex items-center gap-1">
+        <span>📱</span>
+        <span>포스트잇 참여 QR</span>
+      </span>
+      <button
+        type="button"
+        id="miniQrToggleText"
+        onclick="toggleMiniQrWidget()"
+        class="text-[11px] font-bold text-slate-400 hover:text-slate-700 cursor-pointer"
+      >
+        접기 ▼
+      </button>
+    </div>
+
+    <div id="miniQrWidgetBody" class="pt-2 flex flex-col items-center space-y-2">
+      <button
+        type="button"
+        onclick="openQrModal()"
+        class="p-1.5 bg-white rounded-xl border border-slate-200 hover:border-amber-400 transition cursor-pointer group"
+        title="클릭하면 QR 코드를 화면 중앙에 크게 확대합니다"
+      >
+        <img id="miniQrImg" src="" alt="참여 QR" class="w-32 h-32 object-contain">
+        <span class="block text-[11px] font-extrabold text-amber-700 group-hover:underline mt-1">
+          🔍 클릭하여 크게 보기
+        </span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ==================================================================== -->
+  <!-- [모달 1] 포스트잇 클릭 시 대형 확대 열람 모달 (Zoom Inspection Modal) -->
+  <!-- ==================================================================== -->
+  <div
+    id="zoomPostitModal"
+    onclick="if(event.target === this) closeZoomModal()"
+    class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8"
+  >
+    <div class="relative w-full max-w-3xl flex flex-col items-center">
+
+      <!-- 좌우 이동 화살표 버튼 (데스크톱/대형 모니터) -->
+      <button
+        type="button"
+        onclick="navigateZoomedNote(-1)"
+        class="hidden md:flex fixed left-6 lg:left-12 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/90 hover:bg-white text-slate-900 shadow-xl items-center justify-center text-2xl font-black transition transform hover:scale-110 cursor-pointer"
+        title="이전 포스트잇 (← 키)"
+      >
+        ◀
+      </button>
+
+      <button
+        type="button"
+        onclick="navigateZoomedNote(1)"
+        class="hidden md:flex fixed right-6 lg:right-12 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/90 hover:bg-white text-slate-900 shadow-xl items-center justify-center text-2xl font-black transition transform hover:scale-110 cursor-pointer"
+        title="다음 포스트잇 (→ 키)"
+      >
+        ▶
+      </button>
+
+      <!-- 확대된 대형 포스트잇 본체 -->
+      <div id="zoomPostitCard" class="postit-zoom-card postit-yellow w-full animate-zoom-modal">
+        <!-- 상단 마스킹 테이프 / 압정 -->
+        <div id="zoomPinDecor">
+          <div class="postit-tape"></div>
+        </div>
+
+        <!-- 상단 바: 주제 배지 + 순서 + 닫기 -->
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-black/10 pb-3.5">
+          <div class="flex items-center gap-2">
+            <span id="zoomTopicBadge" class="px-3.5 py-1 rounded-full text-xs sm:text-sm font-black bg-black/10">
+              🔥 주제 1 · 교원학습공동체 응원
+            </span>
+            <span id="zoomTimeText" class="text-xs sm:text-sm font-bold opacity-65">
+              방금 전
+            </span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span id="zoomPositionIndicator" class="px-3 py-1 rounded-full text-xs font-black bg-white/60 font-mono">
+              1 / 1
+            </span>
+            <button
+              type="button"
+              onclick="handleDeleteCurrentZoomedNote()"
+              class="p-2 rounded-xl bg-black/5 hover:bg-rose-500 hover:text-white text-xs font-bold transition cursor-pointer"
+              title="이 포스트잇 삭제"
+            >
+              🗑️
+            </button>
+            <button
+              type="button"
+              onclick="closeZoomModal()"
+              class="px-3.5 py-1.5 rounded-xl bg-black/15 hover:bg-black/25 text-sm font-black transition cursor-pointer"
+              title="닫기 (ESC)"
+            >
+              ✕ 닫기
+            </button>
+          </div>
+        </div>
+
+        <!-- 확대된 포스트잇 메시지 본문 -->
+        <div class="min-h-[220px] sm:min-h-[260px] flex items-center">
+          <p id="zoomContentText" class="text-2xl sm:text-3xl md:text-4xl font-bold leading-relaxed whitespace-pre-wrap break-words my-6 w-full">
+            응원 메시지 내용
+          </p>
+        </div>
+
+        <!-- 하단 바: 보내는 분 & 공감 하트 버튼 -->
+        <div class="pt-4 border-t border-black/10 flex flex-wrap items-center justify-between gap-4">
+          <div id="zoomAuthorText" class="text-lg sm:text-2xl font-black opacity-90">
+            From. 영서중 동료선생님
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <button
+              type="button"
+              onclick="navigateZoomedNote(-1)"
+              class="px-4 py-2.5 rounded-xl bg-white/65 hover:bg-white/95 border border-black/10 text-xs sm:text-sm font-black transition cursor-pointer"
+            >
+              ◀ 이전
+            </button>
+
+            <button
+              type="button"
+              onclick="handleZoomModalLike()"
+              class="px-5 py-2.5 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white font-black text-sm sm:text-base shadow-md transition transform active:scale-110 flex items-center gap-2 cursor-pointer"
+            >
+              <span>❤️ 공감 응원하기</span>
+              <span id="zoomLikeCount" class="px-2 py-0.5 rounded-full bg-white/25 text-xs font-mono">0</span>
+            </button>
+
+            <button
+              type="button"
+              onclick="navigateZoomedNote(1)"
+              class="px-4 py-2.5 rounded-xl bg-white/65 hover:bg-white/95 border border-black/10 text-xs sm:text-sm font-black transition cursor-pointer"
+            >
+              다음 ▶
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <p class="mt-3 text-xs font-bold text-white/80">
+        💡 키보드 좌우 화살표(◀ / ▶)로 다음 포스트잇을 넘겨가며 함께 읽을 수 있습니다. (닫기: ESC 또는 배경 클릭)
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================================================================== -->
+  <!-- [모달 2] 대형 QR 코드 안내 모달 -->
+  <!-- ==================================================================== -->
+  <div
+    id="qrCodeModal"
+    onclick="if(event.target === this) closeQrModal()"
+    class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4"
+  >
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 text-center space-y-5 shadow-2xl border border-slate-200 animate-zoom-modal">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <span class="text-sm font-black text-amber-700">📱 선생님 참여용 QR 코드</span>
+        <button
+          type="button"
+          onclick="closeQrModal()"
+          class="px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-black text-slate-700 cursor-pointer"
+        >
+          ✕ 닫기
+        </button>
+      </div>
+
+      <div class="space-y-1">
+        <h3 class="text-2xl font-black text-slate-900">
+          스마트폰으로 포스트잇을 남겨주세요!
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-600">
+          별도 로그인 없이 QR 코드를 스캔하면<br>
+          <strong>1. 교원학습공동체 응원</strong> ➔ <strong>2. 동료선생님께 따뜻한 한마디</strong>를 순서대로 적을 수 있습니다.
+        </p>
+      </div>
+
+      <div class="inline-block p-4 bg-white rounded-3xl border-2 border-amber-300 shadow-md">
+        <img id="modalQrImg" src="" alt="참여 QR 코드" class="w-64 h-64 sm:w-72 sm:h-72 object-contain mx-auto">
+      </div>
+
+      <!-- 접속 주소 표시 및 전환 옵션 -->
+      <div class="space-y-2 text-left bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-extrabold text-slate-500">참여 페이지 주소</span>
+          <div class="flex items-center gap-1">
+            <button
+              type="button"
+              onclick="setQrUrlMode('github')"
+              class="px-2 py-0.5 rounded bg-white border border-slate-200 text-[11px] font-bold text-slate-600 hover:bg-slate-100 cursor-pointer"
+            >
+              온라인(GitHub) 주소
+            </button>
+            <button
+              type="button"
+              onclick="setQrUrlMode('current')"
+              class="px-2 py-0.5 rounded bg-white border border-slate-200 text-[11px] font-bold text-slate-600 hover:bg-slate-100 cursor-pointer"
+            >
+              현재 창 기준 주소
+            </button>
+          </div>
+        </div>
+        <p id="modalQrUrlText" class="text-xs font-mono text-sky-700 break-all font-bold">
+          https://...
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================================================================== -->
+  <!-- [모달 3] 모니터에서 바로 포스트잇 작성 모달 -->
+  <!-- ==================================================================== -->
+  <div
+    id="quickWriteModal"
+    onclick="if(event.target === this) closeQuickWriteModal()"
+    class="hidden fixed inset-0 z-50 bg-slate-900/65 backdrop-blur-sm flex items-center justify-center p-4"
+  >
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-200 animate-zoom-modal">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-base font-black text-slate-900">✍️ 전시 화면에서 바로 포스트잇 붙이기</h3>
+        <button
+          type="button"
+          onclick="closeQuickWriteModal()"
+          class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-600 cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <form onsubmit="handleQuickWriteSubmit(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-extrabold text-slate-600 mb-1">어느 전시관에 붙일까요?</label>
+          <select
+            id="quickWriteTopicSelect"
+            class="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-xs sm:text-sm font-bold text-slate-800 outline-none"
+          >
+            <option value="1">1. 🔥 교원학습공동체 참여 선생님들께 응원 한마디</option>
+            <option value="2">2. 💝 영서중 동료선생님들께 따뜻한 말 한마디</option>
+          </select>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-extrabold text-slate-600">포스트잇 색상</span>
+          <div id="quickWriteColorSwatches" class="flex items-center gap-1.5"></div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-extrabold text-slate-600 mb-1">메시지 내용</label>
+          <textarea
+            id="quickWriteContent"
+            rows="4"
+            maxlength="300"
+            required
+            placeholder="따뜻한 응원 한마디를 입력해 주세요..."
+            class="w-full p-3 rounded-xl bg-amber-50/60 border border-amber-200 text-sm font-medium text-slate-900 outline-none focus:border-amber-400 resize-none"
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-extrabold text-slate-600 mb-1">보내는 분 (선택 · 익명 가능)</label>
+          <input
+            type="text"
+            id="quickWriteAuthor"
+            maxlength="20"
+            placeholder="비워두면 '영서중 동료선생님'으로 표시됩니다"
+            class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-300 text-xs sm:text-sm font-bold text-slate-800 outline-none"
+          >
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black text-sm shadow-md transition cursor-pointer"
+        >
+          📌 포스트잇 보드에 붙이기
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================================================================== -->
+  <!-- [모달 4] 관리 / 새 창으로 분리 / 엑셀 저장 / 초기화 모달 -->
+  <!-- ==================================================================== -->
+  <div
+    id="adminModal"
+    onclick="if(event.target === this) closeAdminModal()"
+    class="hidden fixed inset-0 z-50 bg-slate-900/65 backdrop-blur-sm flex items-center justify-center p-4"
+  >
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 shadow-2xl border border-slate-200 animate-zoom-modal">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-base font-black text-slate-900">⚙️ 전시 보드 관리 및 도구</h3>
+        <button
+          type="button"
+          onclick="closeAdminModal()"
+          class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-600 cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- 1. 전시 페이지 새 창으로 각각 띄우기 -->
+      <div class="space-y-2">
+        <span class="text-xs font-extrabold text-slate-500 block">🖥️ 1번 전시 페이지 / 2번 전시 페이지 따로 열기</span>
+        <div class="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onclick="openSeparateTopicWindow(1)"
+            class="p-3 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-black transition cursor-pointer"
+          >
+            🔥 1번 전시관 새 창 열기 ↗
+          </button>
+          <button
+            type="button"
+            onclick="openSeparateTopicWindow(2)"
+            class="p-3 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-900 text-xs font-black transition cursor-pointer"
+          >
+            💝 2번 전시관 새 창 열기 ↗
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. 엑셀(CSV) 파일 다운로드 -->
+      <div class="space-y-2 pt-2 border-t border-slate-100">
+        <span class="text-xs font-extrabold text-slate-500 block">📥 데이터 소장하기</span>
+        <button
+          type="button"
+          onclick="exportPostitsToCsv()"
+          class="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-black shadow-xs transition cursor-pointer"
+        >
+          📊 전체 응원 메시지 엑셀(CSV) 다운로드
+        </button>
+      </div>
+
+      <!-- 3. 포스트잇 초기화 -->
+      <div class="space-y-2 pt-2 border-t border-slate-100">
+        <span class="text-xs font-extrabold text-rose-600 block">🗑️ 포스트잇 보드 비우기 (주의)</span>
+        <div class="grid grid-cols-3 gap-2">
+          <button
+            type="button"
+            onclick="handleClearNotes(1)"
+            class="py-2.5 px-2 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 border border-slate-200 text-xs font-bold transition cursor-pointer"
+          >
+            1번만 비우기
+          </button>
+          <button
+            type="button"
+            onclick="handleClearNotes(2)"
+            class="py-2.5 px-2 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 border border-slate-200 text-xs font-bold transition cursor-pointer"
+          >
+            2번만 비우기
+          </button>
+          <button
+            type="button"
+            onclick="handleClearNotes(null)"
+            class="py-2.5 px-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-black transition cursor-pointer"
+          >
+            전체 비우기
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 실시간 도착 알림 토스트 -->
+  <div
+    id="boardToast"
+    class="hidden fixed top-20 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-2xl bg-slate-900/95 text-white border border-slate-700 shadow-2xl text-sm font-black animate-bounce"
+  ></div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/postit_core.js"></script>
+  <script src="js/board.js"></script>
+</body>
+</html>

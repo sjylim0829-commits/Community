@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>영서중학교 따뜻한 응원 포스트잇 작성 | 교원학습공동체 발표회</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Firebase App & Cloud Firestore SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <!-- Post-it Custom Styles -->
+  <link rel="stylesheet" href="css/postit.css">
+</head>
+<body class="write-bg min-h-screen text-slate-800 flex flex-col justify-between items-center p-4 sm:p-6">
+
+  <!-- 상단 헤더 -->
+  <header class="w-full max-w-lg flex justify-between items-center py-2 mb-2">
+    <div class="flex items-center gap-2.5">
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-rose-500 text-white flex items-center justify-center text-xl shadow-sm">
+        📌
+      </div>
+      <div>
+        <span class="text-[11px] font-extrabold text-amber-700 tracking-tight block">영서중학교 2학기말 교원학습공동체 발표회</span>
+        <h1 class="text-base sm:text-lg font-black text-slate-900 leading-tight">따뜻한 응원 포스트잇</h1>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <span id="writeConnectionBadge" class="px-2.5 py-1 text-xs rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5 font-bold shadow-xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>연결 중</span>
+      </span>
+      <a
+        href="board.html"
+        class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold shadow-xs transition"
+        title="전시용 보드 보기"
+      >
+        🖥️ 보드
+      </a>
+    </div>
+  </header>
+
+  <!-- 메인 컨테이너 -->
+  <main class="w-full max-w-lg my-auto space-y-4 pb-8">
+
+    <!-- 상단 순차 진행 단계 바 (1번 포스트잇 -> 2번 포스트잇) -->
+    <div class="bg-white/85 backdrop-blur-md p-2 rounded-2xl border border-slate-200/90 shadow-xs flex items-center gap-2">
+      <button
+        type="button"
+        id="stepTab1"
+        onclick="goToStep(1)"
+        class="flex-1 py-2.5 px-3 rounded-xl font-black text-xs sm:text-sm bg-amber-500 text-white shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer"
+      >
+        <span>1️⃣ 교학공 응원</span>
+        <span id="step1SavedCheck" class="hidden px-1.5 py-0.5 text-[10px] rounded-full bg-white text-emerald-700 font-black">완료✓</span>
+      </button>
+
+      <span class="text-slate-300 font-black text-xs">➔</span>
+
+      <button
+        type="button"
+        id="stepTab2"
+        onclick="goToStep(2)"
+        class="flex-1 py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm bg-white/80 text-slate-600 border border-slate-200 hover:bg-slate-100 transition flex items-center justify-center gap-1.5 cursor-pointer"
+      >
+        <span>2️⃣ 동료교사 한마디</span>
+        <span id="step2SavedCheck" class="hidden px-1.5 py-0.5 text-[10px] rounded-full bg-white text-emerald-700 font-black">완료✓</span>
+      </button>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- [섹션 A] 포스트잇 작성 화면 (Step 1 & Step 2 공용 순차 에디터) -->
+    <!-- ================================================================== -->
+    <section id="sectionEditor" class="space-y-4">
+
+      <!-- 현재 단계 주제 안내 카드 -->
+      <div class="bg-white/95 backdrop-blur-md p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <span id="topicStepBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-900 border border-amber-300">
+            🔥 첫 번째 포스트잇 (1/2)
+          </span>
+          <span class="text-[11px] font-bold text-slate-400">별도 로그인 없이 바로 작성</span>
+        </div>
+
+        <h2 id="topicTitleText" class="text-lg sm:text-xl font-black text-slate-900 leading-snug break-keep">
+          1. 뜨거운 열정으로 연구에 참여해주신 교원학습공동체 참여 선생님들께 응원 한마디
+        </h2>
+
+        <p id="topicSubtitleText" class="text-xs sm:text-sm text-slate-600 leading-relaxed break-keep">
+          2학기말 교원학습공동체 발표회를 빛내주신 선생님들께 따뜻한 격려와 응원의 마음을 남겨주세요!
+        </p>
+      </div>
+
+      <!-- 포스트잇 색상 선택 바 -->
+      <div class="bg-white/90 backdrop-blur-md px-4 py-3 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-between">
+        <span class="text-xs font-extrabold text-slate-600 flex items-center gap-1.5">
+          <span>🎨</span>
+          <span>포스트잇 색상</span>
+        </span>
+        <div id="colorSwatchContainer" class="flex items-center gap-2">
+          <!-- JS에서 6가지 파스텔 컬러 렌더링 -->
+        </div>
+      </div>
+
+      <!-- 실제 포스트잇 모양의 입력 페이지 -->
+      <form id="postitForm" onsubmit="handleSubmitCurrentStep(event)" class="space-y-4 pt-2">
+        <div id="postitEditorCard" class="postit-editor-card postit-yellow">
+          <!-- 상단 테이프 또는 압정 장식 -->
+          <div id="editorPinDecor">
+            <div class="postit-tape"></div>
+          </div>
+
+          <!-- 포스트잇 상단 수신자 라벨 & 글자수 -->
+          <div class="flex justify-between items-center border-b border-black/10 pb-2.5 mb-3">
+            <span id="innerPostitTopicLabel" class="text-xs sm:text-sm font-black opacity-80">
+              TO. 뜨거운 열정의 교원학습공동체 선생님들께
+            </span>
+            <span id="charCountText" class="text-[11px] font-bold opacity-60 font-mono">
+              0 / 300자
+            </span>
+          </div>
+
+          <!-- 포스트잇 본문 입력란 -->
+          <textarea
+            id="postitContentInput"
+            rows="6"
+            maxlength="300"
+            oninput="handleTextareaInput()"
+            placeholder="여기에 따뜻한 응원의 말을 적어주세요..."
+            class="w-full bg-transparent border-none outline-none resize-none text-base sm:text-lg font-medium leading-relaxed placeholder-black/35 postit-lined-text"
+          ></textarea>
+
+          <!-- 포스트잇 하단 보내는 사람 (선택 사항) -->
+          <div class="mt-3 pt-3 border-t border-black/10 flex items-center justify-end gap-2">
+            <label for="postitAuthorInput" class="text-xs sm:text-sm font-black opacity-75 shrink-0">
+              From.
+            </label>
+            <input
+              type="text"
+              id="postitAuthorInput"
+              maxlength="20"
+              placeholder="성함 또는 별칭 (선택 · 익명 가능)"
+              oninput="syncInputsToState()"
+              class="w-48 sm:w-56 px-2.5 py-1.5 rounded-lg bg-white/55 focus:bg-white/90 border border-black/15 text-xs sm:text-sm font-bold text-slate-900 placeholder-black/40 outline-none transition text-right"
+            >
+          </div>
+        </div>
+
+        <!-- 빠른 응원 문구 추천 (원터치 입력 도우미) -->
+        <div class="bg-white/85 backdrop-blur-md p-3.5 rounded-2xl border border-slate-200/80 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-slate-600">💡 터치하면 문구가 바로 입력돼요 (직접 수정 가능)</span>
+          </div>
+          <div id="quickChipsContainer" class="flex flex-wrap gap-1.5">
+            <!-- JS에서 추천 문구 칩 렌더링 -->
+          </div>
+        </div>
+
+        <!-- 하단 제출 & 이전/건너뛰기 버튼 -->
+        <div class="space-y-2.5 pt-1">
+          <div class="flex items-center gap-2.5">
+            <button
+              type="button"
+              id="btnPrevStep"
+              onclick="goToStep(1)"
+              class="hidden px-4 py-4 rounded-2xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-sm shadow-xs transition cursor-pointer shrink-0"
+            >
+              👈 1번으로
+            </button>
+
+            <button
+              type="submit"
+              id="btnPrimarySubmit"
+              class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-base sm:text-lg shadow-lg shadow-amber-500/20 transition transform active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>📌 1번 포스트잇 붙이고 다음(2번)으로 👉</span>
+            </button>
+          </div>
+
+          <div class="text-center">
+            <button
+              type="button"
+              id="btnSkipStep"
+              onclick="handleSkipStep()"
+              class="text-xs font-bold text-slate-500 hover:text-slate-800 underline underline-offset-4 py-1.5 px-3 transition cursor-pointer"
+            >
+              2번 포스트잇(동료 선생님께 한마디) 먼저 작성하기 →
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- [섹션 B] 1·2번 포스트잇 작성 완료 화면 (Step 3) -->
+    <!-- ================================================================== -->
+    <section id="sectionComplete" class="hidden space-y-5">
+      <div class="bg-white/95 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-lg text-center space-y-4">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-amber-400 to-rose-500 text-white flex items-center justify-center text-3xl shadow-md">
+          🎉
+        </div>
+
+        <div class="space-y-1.5">
+          <span class="inline-block px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
+            전시 보드 부착 완료!
+          </span>
+          <h2 class="text-2xl font-black text-slate-900">
+            따뜻한 포스트잇이 전달되었습니다!
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed break-keep">
+            선생님께서 남겨주신 소중한 응원 메시지가 회의실 대형 모니터 전시 보드에 실시간으로 붙여졌습니다 ❤️
+          </p>
+        </div>
+
+        <!-- 내가 작성한 1번 / 2번 포스트잇 미리보기 및 수정 -->
+        <div id="completedNotesPreview" class="space-y-5 pt-3">
+          <!-- JS에서 렌더링 -->
+        </div>
+
+        <!-- 추가 작업 버튼 -->
+        <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-2.5">
+          <button
+            type="button"
+            onclick="startNewPostitSet()"
+            class="flex-1 py-3.5 px-4 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black text-sm shadow-md transition cursor-pointer"
+          >
+            ➕ 새 포스트잇 한 장 더 쓰기
+          </button>
+          <a
+            href="board.html"
+            class="flex-1 py-3.5 px-4 rounded-2xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-black text-sm transition flex items-center justify-center gap-1.5"
+          >
+            <span>🖥️ 전체 포스트잇 전시 보드 보기</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 하단 푸터 -->
+  <footer class="w-full max-w-lg text-center py-3 text-[11px] text-slate-400 font-medium">
+    영서중학교 2학기말 교원학습공동체 발표회 · 실시간 나눔 보드
+  </footer>
+
+  <!-- 토스트 알림 -->
+  <div id="writeToast" class="hidden"></div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/postit_core.js"></script>
+  <script src="js/write.js"></script>
+</body>
+</html>

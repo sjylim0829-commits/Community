@@ -1,0 +1,373 @@
+/* ==========================================================================
+   영서중학교 2학기말 교원학습공동체 발표회 & 연말 응원 포스트잇 보드 (postit.css)
+   Realistic Post-it Notes, Cork/Felt Exhibition Board, & Zoom Modal
+   ========================================================================== */
+
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gowun+Dodum&display=swap');
+
+:root {
+  --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-note: "Gowun Dodum", "Pretendard", sans-serif;
+  --font-hand: "Gaegu", cursive, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   전시용 보드 배경 테마 (Exhibition Board Themes)
+   ========================================================================== */
+
+/* 전시관 1: 교원학습공동체 응원 보드 (따뜻한 우드/코르크 & 크림 펠트 톤) */
+.board-theme-1 {
+  background-color: #f6f1e9;
+  background-image:
+    radial-gradient(#d8cbb8 1.25px, transparent 1.25px),
+    radial-gradient(#e5dccf 1.25px, #f6f1e9 1.25px);
+  background-size: 32px 32px;
+  background-position: 0 0, 16px 16px;
+}
+
+/* 전시관 2: 영서중 동료선생님 따뜻한 한마디 보드 (포근한 세이지/슬레이트 펠트 톤) */
+.board-theme-2 {
+  background-color: #eef4f2;
+  background-image:
+    radial-gradient(#cbdcd6 1.25px, transparent 1.25px),
+    radial-gradient(#dce8e4 1.25px, #eef4f2 1.25px);
+  background-size: 32px 32px;
+  background-position: 0 0, 16px 16px;
+}
+
+/* 개별 작성 페이지 배경 */
+.write-bg {
+  background-color: #f8fafc;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(251, 191, 36, 0.14) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.10) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.10) 0px, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* ==========================================================================
+   포스트잇 카드 기본 형태 & 6가지 파스텔 컬러 팔레트
+   ========================================================================== */
+.postit-card {
+  position: relative;
+  border-radius: 4px 4px 18px 4px;
+  padding: 26px 22px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+  box-shadow:
+    0 10px 20px -5px rgba(15, 23, 42, 0.12),
+    0 4px 8px -4px rgba(15, 23, 42, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  user-select: none;
+  transform: rotate(var(--note-rot, 0deg));
+  font-family: var(--font-note);
+  overflow: visible;
+}
+
+/* 우측 하단 살짝 들린 종이 그림자 효과 */
+.postit-card::after {
+  content: "";
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  width: 55%;
+  height: 16px;
+  background: rgba(0, 0, 0, 0.16);
+  filter: blur(7px);
+  transform: rotate(3deg);
+  z-index: -1;
+  pointer-events: none;
+  transition: all 0.25s ease;
+}
+
+/* 호버 시 정방향으로 펴지면서 살짝 떠오름 */
+.postit-card:hover {
+  transform: translateY(-7px) scale(1.03) rotate(0deg) !important;
+  box-shadow:
+    0 22px 35px -8px rgba(15, 23, 42, 0.20),
+    0 10px 15px -6px rgba(15, 23, 42, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  z-index: 20;
+}
+
+/* 작성용 대형 포스트잇 (호버 회전 없음) */
+.postit-editor-card {
+  position: relative;
+  border-radius: 6px 6px 26px 6px;
+  padding: 34px 24px 24px 24px;
+  box-shadow:
+    0 18px 36px -8px rgba(15, 23, 42, 0.14),
+    0 6px 14px -4px rgba(15, 23, 42, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  font-family: var(--font-note);
+}
+
+/* 확대 모달용 대형 포스트잇 */
+.postit-zoom-card {
+  position: relative;
+  border-radius: 8px 8px 34px 8px;
+  padding: 44px 36px 32px 36px;
+  box-shadow:
+    0 30px 60px -12px rgba(15, 23, 42, 0.38),
+    0 12px 24px -8px rgba(15, 23, 42, 0.22),
+    inset 0 2px 0 rgba(255, 255, 255, 0.75);
+  font-family: var(--font-note);
+}
+
+/* 1. 🌼 Warm Yellow (클래식 포스트잇 옐로우) */
+.postit-yellow {
+  background: linear-gradient(155deg, #fef9c3 0%, #fef08a 65%, #fde047 100%);
+  border: 1px solid #facc15;
+  color: #422006;
+}
+
+/* 2. 🌸 Coral Pink (러블리 코랄 핑크) */
+.postit-pink {
+  background: linear-gradient(155deg, #ffe4e6 0%, #fecdd3 68%, #fda4af 100%);
+  border: 1px solid #fb7185;
+  color: #4c0519;
+}
+
+/* 3. 🌿 Mint Green (산뜻한 민트 그린) */
+.postit-mint {
+  background: linear-gradient(155deg, #d1fae5 0%, #a7f3d0 68%, #6ee7b7 100%);
+  border: 1px solid #34d399;
+  color: #064e3b;
+}
+
+/* 4. ☁️ Sky Blue (맑은 스카이 블루) */
+.postit-blue {
+  background: linear-gradient(155deg, #e0f2fe 0%, #bae6fd 68%, #7dd3fc 100%);
+  border: 1px solid #38bdf8;
+  color: #0c4a6e;
+}
+
+/* 5. 🍇 Lavender Purple (포근한 라벤더 퍼플) */
+.postit-purple {
+  background: linear-gradient(155deg, #f3e8ff 0%, #e9d5ff 68%, #d8b4fe 100%);
+  border: 1px solid #c084fc;
+  color: #3b0764;
+}
+
+/* 6. 🍑 Peach Orange (따스한 피치 오렌지) */
+.postit-orange {
+  background: linear-gradient(155deg, #ffedd5 0%, #fed7aa 68%, #fdba74 100%);
+  border: 1px solid #fb923c;
+  color: #431407;
+}
+
+/* ==========================================================================
+   마스킹 테이프 & 압정 장식 (Top Tape & Pushpin Accents)
+   ========================================================================== */
+.postit-tape {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1.5deg);
+  width: 92px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(2px);
+  border-left: 2px dashed rgba(203, 213, 225, 0.65);
+  border-right: 2px dashed rgba(203, 213, 225, 0.65);
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.08);
+  pointer-events: none;
+}
+
+.postit-pin {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fb7185, #e11d48 70%, #881337 100%);
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.28),
+    inset 0 2px 3px rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+}
+
+.postit-pin::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.postit-pin.pin-gold {
+  background: radial-gradient(circle at 35% 35%, #fde047, #eab308 70%, #854d0e 100%);
+}
+
+.postit-pin.pin-blue {
+  background: radial-gradient(circle at 35% 35%, #7dd3fc, #0284c7 70%, #075985 100%);
+}
+
+.postit-pin.pin-emerald {
+  background: radial-gradient(circle at 35% 35%, #6ee7b7, #059669 70%, #064e3b 100%);
+}
+
+/* ==========================================================================
+   포스트잇 내부 노트 줄무늬 효과 (선택적 은은한 가이드라인)
+   ========================================================================== */
+.postit-lined-text {
+  background-image: linear-gradient(transparent, transparent 31px, rgba(15, 23, 42, 0.06) 32px);
+  background-size: 100% 32px;
+  line-height: 32px;
+}
+
+/* ==========================================================================
+   색상 선택 동그라미 버튼 (Color Swatches)
+   ========================================================================== */
+.color-swatch {
+  width: 38px;
+  height: 38px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2.5px solid rgba(15, 23, 42, 0.12);
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.08);
+}
+
+.color-swatch:hover {
+  transform: scale(1.12);
+}
+
+.color-swatch.active {
+  transform: scale(1.18);
+  border-color: #0f172a;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.18), 0 4px 10px rgba(15, 23, 42, 0.15);
+}
+
+/* ==========================================================================
+   전시용 보드 그리드 레이아웃 (크기 모드 지원)
+   ========================================================================== */
+.postit-wall-grid {
+  display: grid;
+  gap: 28px;
+  padding: 18px 8px 80px 8px;
+}
+
+/* 기본 크기 (모니터에서 보기 좋은 밸런스) */
+.postit-wall-grid.size-normal {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+.postit-wall-grid.size-normal .postit-card {
+  min-height: 235px;
+}
+.postit-wall-grid.size-normal .postit-body-text {
+  font-size: 1.15rem;
+  line-height: 1.62;
+}
+
+/* 크게 보기 (글씨가 큼직하게 보이는 모드) */
+.postit-wall-grid.size-large {
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 32px;
+}
+.postit-wall-grid.size-large .postit-card {
+  min-height: 280px;
+  padding: 32px 26px 24px 26px;
+}
+.postit-wall-grid.size-large .postit-body-text {
+  font-size: 1.38rem;
+  line-height: 1.65;
+}
+
+/* 한눈에 많이 보기 (선생님 40~60명 이상 모두 한 화면에 담기 좋은 컴팩트 모드) */
+.postit-wall-grid.size-compact {
+  grid-template-columns: repeat(auto-fill, minmax(205px, 1fr));
+  gap: 20px;
+}
+.postit-wall-grid.size-compact .postit-card {
+  min-height: 185px;
+  padding: 22px 16px 16px 16px;
+}
+.postit-wall-grid.size-compact .postit-body-text {
+  font-size: 0.98rem;
+  line-height: 1.52;
+}
+
+/* 본문 말줄임 (전시 카드에서 너무 길면 6줄까지 표시 후 클릭 시 전체 열람) */
+.postit-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* ==========================================================================
+   애니메이션 (새 포스트잇 부착 효과 & 모달 줌인 효과)
+   ========================================================================== */
+@keyframes stickPostitIn {
+  0% {
+    opacity: 0;
+    transform: scale(1.35) translateY(-30px) rotate(-6deg);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(0.96) translateY(3px) rotate(calc(var(--note-rot, 0deg) * 1.1));
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotate(var(--note-rot, 0deg));
+  }
+}
+
+.animate-stick-in {
+  animation: stickPostitIn 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes zoomModalIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.82) translateY(24px) rotate(-2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotate(0deg);
+  }
+}
+
+.animate-zoom-modal {
+  animation: zoomModalIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes floatPulse {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-float {
+  animation: floatPulse 2.8s ease-in-out infinite;
+}
