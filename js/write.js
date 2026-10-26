@@ -144,21 +144,6 @@ function handleTextareaInput() {
   }
 }
 
-// 빠른 문구 칩 클릭 시 텍스트 영역에 추가
-function insertQuickChip(chipText) {
-  const textarea = document.getElementById("postitContentInput");
-  if (!textarea) return;
-
-  const current = textarea.value.trim();
-  if (!current) {
-    textarea.value = chipText;
-  } else if (!current.includes(chipText)) {
-    textarea.value = current + "\n" + chipText;
-  }
-  textarea.focus();
-  handleTextareaInput();
-}
-
 // 단계(Step 1, Step 2, Step 3 완료) 화면 전환 및 렌더링
 function renderCurrentStep() {
   const step = writeState.currentStep;
@@ -263,24 +248,6 @@ function renderCurrentStep() {
 
   handleTextareaInput();
   renderColorPalette();
-
-  // 빠른 예시 문구 칩 렌더링
-  const chipsContainer = document.getElementById("quickChipsContainer");
-  if (chipsContainer) {
-    chipsContainer.innerHTML = topicInfo.quickChips
-      .map(
-        (chip) => `
-        <button
-          type="button"
-          onclick="insertQuickChip('${escapeHtml(chip)}')"
-          class="text-left text-xs px-3 py-1.5 rounded-xl bg-white/90 hover:bg-white text-slate-700 border border-slate-200/90 shadow-2xs transition active:scale-95 cursor-pointer"
-        >
-          💬 ${escapeHtml(chip)}
-        </button>
-      `
-      )
-      .join("");
-  }
 
   // 하단 버튼 영역 구성
   const btnPrevStep = document.getElementById("btnPrevStep");
