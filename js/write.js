@@ -54,21 +54,11 @@ function initWritePage() {
     }
   );
 
-  // URL 파라미터로 특정 단계 지정 시 (?step=2, ?preview=1)
+  // URL 파라미터로 특정 단계 지정 시 (?step=2)
   const params = new URLSearchParams(window.location.search);
   const stepParam = Number(params.get("step"));
   if (stepParam === 1 || stepParam === 2 || stepParam === 3) {
     writeState.currentStep = stepParam;
-  }
-
-  if (params.get("preview") === "1") {
-    writeState.authorName = "2학년부 동료교사";
-    writeState.notes[1].content =
-      "바쁜 2학기 일정 속에서도 열정적으로 연구하고 깊이 있는 나눔을 해주신 교원학습공동체 선생님들 정말 멋지십니다! 발표 들으며 많은 영감을 얻었어요 👏❤️";
-    writeState.notes[1].saved = writeState.currentStep >= 2;
-    writeState.notes[2].content =
-      "늘 옆에서 따뜻하게 웃어주시고 든든한 힘이 되어주시는 영서중 선생님들! 올 한 해도 선생님들과 함께여서 행복했습니다. 연말까지 건강하게 화이팅해요 🥰🍀";
-    writeState.notes[2].saved = writeState.currentStep === 3;
   }
 
   renderColorPalette();
