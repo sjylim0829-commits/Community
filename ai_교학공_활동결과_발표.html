@@ -222,30 +222,72 @@
       position: relative;
       flex: 1;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 14px 24px;
+      gap: 8px;
+      padding: 8px 24px;
       z-index: 10;
-      overflow: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
     }
 
     .slide-wrapper {
       position: relative;
       width: 100%;
-      max-width: 1320px;
+      max-width: 1180px;
       aspect-ratio: var(--slide-ratio);
-      max-height: calc(100vh - 136px);
+      max-height: calc(100vh - 242px);
+      min-height: 540px;
+      flex-shrink: 0;
       background: var(--bg-card);
       border: 1px solid #E2E8F0;
-      border-radius: 22px;
-      box-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.1);
+      border-radius: 20px;
+      box-shadow: 0 18px 40px -12px rgba(15, 23, 42, 0.1);
       overflow: hidden;
+    }
+
+    /* Script Bar Underneath the Slide */
+    .script-under-bar {
+      width: 100%;
+      max-width: 1180px;
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      border-left: 5px solid #4F46E5;
+      border-radius: 12px;
+      padding: 9px 16px;
+      box-shadow: 0 8px 20px -6px rgba(15, 23, 42, 0.07);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .script-under-badge {
+      background: #EEF2FF;
+      border: 1px solid #C7D2FE;
+      color: #4338CA;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 9px;
+      border-radius: 7px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .script-under-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1E293B;
+      line-height: 1.52;
+      user-select: text;
     }
 
     .slide {
       position: absolute;
       inset: 0;
-      padding: 32px 44px 26px;
+      padding: 22px 36px 18px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -534,8 +576,8 @@
       width: 100%;
       background: #F8FAFC;
       border: 1px solid #E2E8F0;
-      border-radius: 16px;
-      padding: 12px 15px;
+      border-radius: 14px;
+      padding: 10px 14px;
       margin-bottom: 0;
     }
 
@@ -543,13 +585,13 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 8px;
-      padding-bottom: 7px;
+      margin-bottom: 7px;
+      padding-bottom: 6px;
       border-bottom: 1px solid #E2E8F0;
     }
 
     .roster-title {
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 800;
       color: #1E293B;
       display: flex;
@@ -558,11 +600,11 @@
     }
 
     .roster-count {
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 800;
       color: #4338CA;
       background: #EEF2FF;
-      padding: 3px 9px;
+      padding: 2px 8px;
       border-radius: 20px;
       border: 1px solid #C7D2FE;
     }
@@ -570,15 +612,15 @@
     .roster-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 5px 10px;
+      gap: 4.5px 8px;
     }
 
     .member-chip {
       background: #FFFFFF;
       border: 1px solid #E2E8F0;
-      border-radius: 8px;
-      padding: 5.5px 10px;
-      font-size: 12.5px;
+      border-radius: 7px;
+      padding: 4.5px 9px;
+      font-size: 12px;
       font-weight: 700;
       color: #1E293B;
       display: flex;
@@ -1128,7 +1170,7 @@
       <!-- =====================================================================
            SLIDE 1: COVER
       ====================================================================== -->
-      <section class="slide active" data-slide="1">
+      <section class="slide active" data-slide="1" data-script="선생님 여러분, 안녕하십니까. 올 한 해 우리 영서중학교에서 운영한 ‘2026 AI·디지털 선도학교 교원학습공동체’ 활동 결과를 발표할 수학과 임종윤입니다. 저희 교학공은 대표교사이신 과학 홍은영 부장님을 필두로 국어, 진로, 과학, 미술, 수학, 가정, 정보, 사회, 역사까지 총 16명의 다교과 선생님들이 함께 모였습니다. 오른쪽 화면에 보시는 것처럼 노션 통합 허브와 월별 패들렛을 중심으로, 1년간 함께 고민하고 실천한 과정과 결과물을 보여드리겠습니다.">
         <div class="slide-content" style="margin:0;">
           <div class="cover-split">
             <!-- Left Info -->
@@ -1220,7 +1262,7 @@
       <!-- =====================================================================
            SLIDE 2: INFRASTRUCTURE & HUB
       ====================================================================== -->
-      <section class="slide" data-slide="2">
+      <section class="slide" data-slide="2" data-script="먼저 2월과 3월, 기반 구축 단계입니다. 저희는 챗GPT, 클로드, 제미나이 등 최신 생성형 AI를 한 곳에서 비교·활용할 수 있는 ‘이음AI’를 도입하고, 선생님별 교과 특성에 맞는 에듀테크 구독을 지원했습니다. 특히 가운데 보시는 초기 패들렛에 ‘이런 수업, 어떤 도구?’ 코너를 만들어 선생님들마다 다른 AI 숙련도 차이를 즉각적인 동료 코칭으로 해결했고, 오른쪽 노션 아카이브를 통해 계정과 예산, 월별 회의록, 수업 자료를 체계적으로 통합 관리했습니다.">
         <div class="slide-header-row">
           <div>
             <div class="slide-eyebrow">01 · SETUP & INFRASTRUCTURE (2월~3월 기반 구축)</div>
@@ -1298,7 +1340,7 @@
       <!-- =====================================================================
            SLIDE 3: 5-STEP DESIGN & VALIDITY
       ====================================================================== -->
-      <section class="slide" data-slide="3">
+      <section class="slide" data-slide="3" data-script="4월부터 6월까지는 단순히 신기한 도구를 써보는 것을 넘어 ‘이 도구가 내 수업에 정말 타당한가?’를 깊이 고민했습니다. 오른쪽 워크북을 바탕으로 6월 모임에서는 패들렛을 활용해 5단계 수업 고민 분석 워크숍을 진행했는데요. 왼쪽 패들렛 댓글을 보시면 ‘실험 수업과 이론 수업의 집중도 차이’, ‘강의식 수업에서 학생들과의 상호작용 부족’ 등 우리 교실의 솔직한 현재 모습과 이상적인 수업 목표를 나누며, 수업 문제를 해결하기 위한 에듀테크 활용 방안을 설계했습니다.">
         <div class="slide-header-row">
           <div>
             <div class="slide-eyebrow" style="color:#0284C7;">02 · RESEARCH & 5-STEP ANALYSIS (4월~6월 모임)</div>
@@ -1383,7 +1425,7 @@
       <!-- =====================================================================
            SLIDE 4: SUBJECT CLASS SHOWCASES
       ====================================================================== -->
-      <section class="slide" data-slide="4">
+      <section class="slide" data-slide="4" data-script="이렇게 설계한 수업이 실제 학생들의 결과물로 나타난 모습입니다. 왼쪽은 2학년 과학 광합성 수업으로, 학생들이 그린 손그림을 이음AI의 여러 모델로 변환해 패들렛에 공유하며 AI마다 개념을 시각화하는 방식을 비교했습니다. 가운데는 3학년 사회 수업 산출물 두 가지입니다. 위쪽은 간식 포장지의 원산지를 분석하고 생성형 AI로 기후·농업 문제 해결 포스터를 만든 세계시민 전시회이고, 아래쪽은 살기 좋은 도시 공약을 세우고 Suno AI로 직접 선거송을 작곡한 프로젝트입니다. 오른쪽은 국어과 수업으로, AI 글쓰기 플랫폼 ‘자작자작’을 활용해 성취기준에 맞는 글감으로 글을 쓰고 AI 피드백을 받으며 작문 역량을 키웠습니다.">
         <div class="slide-header-row">
           <div>
             <div class="slide-eyebrow" style="color:#E11D48;">03 · STUDENT OUTPUTS IN CLASS (교과별 수업 실천 결과물)</div>
@@ -1491,7 +1533,7 @@
       <!-- =====================================================================
            SLIDE 5: TEACHER VIBE CODING & WEB APPS
       ====================================================================== -->
-      <section class="slide" data-slide="5">
+      <section class="slide" data-slide="5" data-script="나아가 저희 교학공 선생님들은 기존 도구의 소비자에 머물지 않고, 교실과 업무에 필요한 도구를 직접 코딩해 제작했습니다. 왼쪽 큰 화면은 1학년 과학 수업용 ‘입자 운동 시뮬레이션’인데요, 이음AI의 클로드에게 ‘온도와 입자 수만 바꿀 수 있고 빠르기는 잔상으로 표현해줘’라고 자연어로 요청해 바로 작동하는 시뮬레이션을 만들었습니다. 오른쪽 세 가지는 구글 앱스크립트와 AI로 직접 개발한 웹앱으로, 학생부 기재 금지어와 문장을 점검해 주는 ‘AI 생기부 검토 도우미’, 창체 활동용 ‘생태전환 Eco-MBTI’, 야외 자연물 추리 미션 웹앱인 ‘클로즈업 네이처’까지 학교 현장에 꼭 맞는 도구를 직접 만들어 공유했습니다.">
         <div class="slide-header-row">
           <div>
             <div class="slide-eyebrow" style="color:#7C3AED;">04 · TEACHER-BUILT SIMULATIONS & WEB APPS (교사 개발 도구)</div>
@@ -1583,7 +1625,7 @@
       <!-- =====================================================================
            SLIDE 6: 9월 CANVA AI VIBE CODING
       ====================================================================== -->
-      <section class="slide" data-slide="6">
+      <section class="slide" data-slide="6" data-script="2학기인 9월에는 이러한 제작 경험을 전 교원으로 넓히기 위해 ‘캔바 AI 바이브 코딩 연수’와 교학공 나눔을 진행했습니다. 오른쪽 위처럼 자체 제작한 웹 슬라이드로 세션을 진행하며 왼쪽 패들렛에 실시간으로 생각을 나눴는데요, 단시간에 45개의 댓글이 달릴 만큼 열기가 뜨거웠습니다. ‘웹앱 배포까지 가능해 놀랐다’, ‘과학 1인 1탐구 전 단계에 예비탐구 시뮬레이션으로 1~2차시 수업을 해보겠다’, ‘괴로워하지 않고 즐겁게 흐름을 타자’는 격려를 나누며 2학기 ‘1인 1작은시도’를 약속했습니다.">
         <div class="slide-header-row">
           <div>
             <div class="slide-eyebrow" style="color:#059669;">05 · 2ND SEMESTER VIBE CODING WORKSHOP (9월 7일 모임)</div>
@@ -1650,7 +1692,7 @@
       <!-- =====================================================================
            SLIDE 7: CONCLUSION & SUMMARY GALLERY
       ====================================================================== -->
-      <section class="slide" data-slide="7">
+      <section class="slide" data-slide="7" data-script="마지막 정리입니다. 지난 1년간 저희 교학공은 세 가지 의미 있는 변화를 만들어냈습니다. 첫째, 신기한 기능 위주에서 ‘수업 목표와 타당성 중심’으로, 둘째, 혼자 겪는 시행착오에서 ‘노션과 패들렛을 통한 즉각적인 동료 코칭 문화’로, 셋째, 도구의 소비자에서 우리 반에 필요한 도구를 직접 만드는 ‘바이브 코딩 크리에이터’로 함께 성장했습니다. 단 1차시의 작은 시도가 아이들에게는 새로운 배움의 창이 됩니다. 올 한 해 함께 고민하고 도전해주신 열여섯 분의 선생님들과 경청해 주신 모든 분께 감사드립니다.">
         <div class="slide-header-row">
           <div>
             <div class="slide-eyebrow" style="color:#D97706;">06 · CONCLUSION & TAKEAWAYS (성찰과 마무리)</div>
@@ -1753,6 +1795,12 @@
         </div>
       </section>
 
+    </div>
+
+    <!-- Script Bar Underneath the Slide -->
+    <div class="script-under-bar" id="scriptUnderBar">
+      <div class="script-under-badge" id="scriptUnderBadge">🎤 SLIDE 01 예시 대본</div>
+      <div class="script-under-text" id="scriptUnderText"></div>
     </div>
   </main>
 
@@ -1937,6 +1985,13 @@
         progressBar.style.width = `${((currentSlideIndex + 1) / totalSlides) * 100}%`;
         prevBtn.disabled = currentSlideIndex === 0;
         nextBtn.disabled = currentSlideIndex === totalSlides - 1;
+
+        const scriptUnderBadge = document.getElementById('scriptUnderBadge');
+        const scriptUnderText = document.getElementById('scriptUnderText');
+        if (scriptUnderBadge && scriptUnderText) {
+          scriptUnderBadge.textContent = `🎤 SLIDE 0${currentSlideIndex + 1} 예시 대본`;
+          scriptUnderText.textContent = slides[currentSlideIndex].getAttribute('data-script') || '';
+        }
       }
 
       nextBtn.addEventListener('click', () => updateSlide(currentSlideIndex + 1));
