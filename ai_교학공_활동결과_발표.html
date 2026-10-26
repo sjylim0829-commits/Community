@@ -1,0 +1,1983 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 영서중학교 AI·디지털 선도학교 교원학습공동체 활동 결과 발표</title>
+  <!-- Pretendard Font -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-light: #6366F1;
+      --primary-dark: #3730A3;
+      --secondary: #0284C7;
+      --accent: #E11D48;
+      --accent-gradient: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%);
+      --canva-gradient: linear-gradient(135deg, #00A8B5 0%, #4F46E5 50%, #7D2AE8 100%);
+      --bg-main: #F1F5F9;
+      --bg-card: #FFFFFF;
+      --text-main: #0F172A;
+      --text-body: #334155;
+      --text-muted: #64748B;
+      --slide-ratio: 16 / 9;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Ambient background glowing orbs */
+    .bg-glow {
+      position: fixed;
+      width: 650px;
+      height: 650px;
+      border-radius: 50%;
+      filter: blur(140px);
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-1 { top: -160px; left: -100px; background: radial-gradient(circle, #C7D2FE, transparent 70%); }
+    .glow-2 { bottom: -160px; right: -100px; background: radial-gradient(circle, #FBCFE8, transparent 70%); }
+    .glow-3 { top: 45%; left: 55%; transform: translate(-50%, -50%); background: radial-gradient(circle, #BAE6FD, transparent 75%); opacity: 0.3; }
+
+    /* Header Bar */
+    header.deck-header {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 28px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid #E2E8F0;
+      height: 60px;
+    }
+
+    .brand-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge-tag {
+      background: #EEF2FF;
+      border: 1px solid #C7D2FE;
+      color: #4338CA;
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 4px 11px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 6px #10B981;
+    }
+
+    .meeting-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #1E293B;
+    }
+
+    /* Timer */
+    .timer-widget {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      padding: 4px 14px;
+      border-radius: 40px;
+    }
+
+    .timer-display {
+      font-family: monospace;
+      font-size: 17px;
+      font-weight: 800;
+      color: #0F172A;
+      min-width: 58px;
+      text-align: center;
+    }
+    .timer-display.running { color: #2563EB; }
+    .timer-display.ended { color: #E11D48; }
+
+    .timer-controls { display: flex; gap: 4px; }
+
+    .timer-btn {
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      color: #334155;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .timer-presets {
+      display: flex;
+      gap: 4px;
+      border-left: 1px solid #CBD5E1;
+      padding-left: 8px;
+    }
+
+    .preset-chip {
+      background: transparent;
+      border: 1px solid #CBD5E1;
+      color: #64748B;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .preset-chip.active, .preset-chip:hover {
+      background: #4F46E5;
+      border-color: #4F46E5;
+      color: #FFFFFF;
+    }
+
+    /* Header Tools */
+    .header-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .archive-nav-btn {
+      background: linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%);
+      border: 1px solid #FDA4AF;
+      color: #E11D48;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .tool-btn {
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      color: #334155;
+      padding: 6px 11px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .tool-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .progress-track {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: #E2E8F0;
+    }
+    .progress-bar {
+      height: 100%;
+      background: var(--accent-gradient);
+      width: 0%;
+      transition: width 0.35s ease;
+    }
+
+    /* Viewport & Slide Wrapper */
+    main.presentation-viewport {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 24px;
+      z-index: 10;
+      overflow: hidden;
+    }
+
+    .slide-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1320px;
+      aspect-ratio: var(--slide-ratio);
+      max-height: calc(100vh - 136px);
+      background: var(--bg-card);
+      border: 1px solid #E2E8F0;
+      border-radius: 22px;
+      box-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.1);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 32px 44px 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(30px) scale(0.99);
+      transition: opacity 0.32s ease, transform 0.32s ease, visibility 0.32s;
+      pointer-events: none;
+      background: #FFFFFF;
+    }
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0) scale(1);
+      pointer-events: auto;
+    }
+    .slide.prev {
+      transform: translateX(-30px) scale(0.99);
+    }
+
+    /* Slide Header */
+    .slide-header-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+
+    .slide-eyebrow {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .slide-title {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -0.6px;
+      color: #0F172A;
+      line-height: 1.25;
+    }
+
+    .slide-time-badge {
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+      color: #475569;
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 0;
+      margin: 6px 0 10px;
+    }
+
+    .slide-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 10px;
+      border-top: 1px solid #F1F5F9;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Browser / Screenshot Frame Styling */
+    .shot-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+      transition: all 0.22s ease;
+      cursor: zoom-in;
+      position: relative;
+      min-height: 0;
+    }
+
+    .shot-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.11);
+      border-color: #94A3B8;
+    }
+
+    .shot-bar {
+      background: #F8FAFC;
+      border-bottom: 1px solid #E2E8F0;
+      padding: 7px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .shot-dots {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+    .shot-dots span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+    .shot-dots span:nth-child(1) { background: #FB7185; }
+    .shot-dots span:nth-child(2) { background: #FBBF24; }
+    .shot-dots span:nth-child(3) { background: #34D399; }
+
+    .shot-bar-title {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #334155;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .shot-badge {
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: #EEF2FF;
+      color: #4338CA;
+      flex-shrink: 0;
+    }
+
+    .shot-img-wrap {
+      flex: 1;
+      position: relative;
+      background: #0F172A;
+      overflow: hidden;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .shot-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+      transition: transform 0.35s ease;
+    }
+
+    .shot-card:hover .shot-img-wrap img {
+      transform: scale(1.02);
+    }
+
+    .shot-caption {
+      padding: 10px 14px;
+      background: #FFFFFF;
+      border-top: 1px solid #F1F5F9;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .shot-caption-text {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #1E293B;
+      line-height: 1.35;
+    }
+
+    .shot-caption-sub {
+      font-size: 11.5px;
+      color: #64748B;
+      font-weight: 500;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .zoom-pill {
+      font-size: 11px;
+      font-weight: 800;
+      color: #4F46E5;
+      background: #EEF2FF;
+      padding: 4px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Floating Inset Badge Image */
+    .inset-thumb {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      width: 42%;
+      height: 58%;
+      border-radius: 10px;
+      border: 3px solid #FFFFFF;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+      background: #FFFFFF;
+      z-index: 5;
+    }
+    .inset-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain !important;
+      background: #FFFFFF;
+    }
+    .inset-label {
+      position: absolute;
+      bottom: 0;
+      inset-inline: 0;
+      background: rgba(15, 23, 42, 0.82);
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 800;
+      text-align: center;
+      padding: 2px 4px;
+    }
+
+    /* SLIDE 1: Cover Split Layout */
+    .cover-split {
+      display: grid;
+      grid-template-columns: 1.05fr 1.15fr;
+      gap: 28px;
+      height: 100%;
+      align-items: center;
+    }
+
+    .cover-left {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .cover-pill {
+      background: #EEF2FF;
+      border: 1px solid #C7D2FE;
+      padding: 5px 14px;
+      border-radius: 30px;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #4338CA;
+      margin-bottom: 14px;
+    }
+
+    .cover-title {
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      line-height: 1.24;
+      margin-bottom: 12px;
+      color: #0F172A;
+    }
+
+    .gradient-text {
+      background: var(--canva-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .cover-desc {
+      font-size: 14px;
+      color: #475569;
+      line-height: 1.45;
+      margin-bottom: 12px;
+    }
+
+    /* Teacher Roster Box on Slide 1 */
+    .roster-box {
+      width: 100%;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 16px;
+      padding: 12px 15px;
+      margin-bottom: 0;
+    }
+
+    .roster-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      padding-bottom: 7px;
+      border-bottom: 1px solid #E2E8F0;
+    }
+
+    .roster-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #1E293B;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .roster-count {
+      font-size: 11px;
+      font-weight: 800;
+      color: #4338CA;
+      background: #EEF2FF;
+      padding: 3px 9px;
+      border-radius: 20px;
+      border: 1px solid #C7D2FE;
+    }
+
+    .roster-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 5px 10px;
+    }
+
+    .member-chip {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 5.5px 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #1E293B;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .member-chip.highlight-rep {
+      background: #EEF2FF;
+      border-color: #818CF8;
+    }
+
+    .member-chip.highlight-pres {
+      background: #FFF1F2;
+      border-color: #FDA4AF;
+    }
+
+    .role-badge {
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .role-badge.rep {
+      background: #4F46E5;
+      color: #FFFFFF;
+    }
+
+    .role-badge.pres {
+      background: #E11D48;
+      color: #FFFFFF;
+    }
+
+    .vertical-stack-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: 100%;
+      min-height: 0;
+    }
+
+    .vertical-stack-col > .shot-card {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .cover-right-collage {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1.1fr 1fr;
+      gap: 12px;
+      height: 100%;
+      max-height: 490px;
+    }
+
+    .cover-right-collage .shot-card:first-child {
+      grid-column: 1 / -1;
+    }
+
+    /* SLIDE 2 & SLIDE 4: 3-Column Visual Grid */
+    .visual-3col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: minmax(0, 1fr);
+      gap: 16px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* SLIDE 3: 6월 모임 5단계 분석 */
+    .slide3-layout {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      grid-template-rows: minmax(0, 1fr);
+      gap: 18px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .step-pills-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      height: 100%;
+      min-height: 0;
+    }
+
+    .mini-step-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .mini-step {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-top: 3px solid #4F46E5;
+      border-radius: 10px;
+      padding: 8px 9px;
+      text-align: center;
+    }
+    .mini-step strong {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      color: #0F172A;
+    }
+    .mini-step span {
+      font-size: 10.5px;
+      color: #64748B;
+      font-weight: 600;
+    }
+
+    /* SLIDE 5: 4-Column / 2x2 Visual Tools Grid */
+    .visual-2x2 {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr 1fr;
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .visual-2x2 .span-2rows {
+      grid-row: 1 / -1;
+    }
+
+    /* SLIDE 6: 9월 바이브 코딩 */
+    .slide6-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      grid-template-rows: minmax(0, 1fr);
+      gap: 18px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .quote-bubbles {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+
+    .speech-card {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-left: 4px solid #4F46E5;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 11.5px;
+      color: #1E293B;
+      line-height: 1.42;
+    }
+    .speech-card strong {
+      color: #4F46E5;
+      font-weight: 800;
+    }
+
+    /* SLIDE 7: Conclusion */
+    .slide7-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .shift-3col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .shift-card {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 14px;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .shift-flow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .shift-from {
+      color: #64748B;
+      text-decoration: line-through;
+      font-weight: 600;
+    }
+    .shift-to {
+      color: #4F46E5;
+      background: #EEF2FF;
+      padding: 3px 9px;
+      border-radius: 6px;
+    }
+
+    .gallery-strip {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.15fr 1.85fr;
+      gap: 16px;
+      min-height: 0;
+    }
+
+    .inspire-banner {
+      background: linear-gradient(135deg, #EEF2FF 0%, #FFE4E6 100%);
+      border: 1px solid #C7D2FE;
+      border-radius: 16px;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .thumb-strip-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 8px;
+      min-height: 0;
+    }
+
+    .mini-shot {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #CBD5E1;
+      position: relative;
+      cursor: zoom-in;
+      background: #0F172A;
+    }
+    .mini-shot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+    .mini-shot span {
+      position: absolute;
+      bottom: 0;
+      inset-inline: 0;
+      background: rgba(15, 23, 42, 0.8);
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 6px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Bottom Control Bar */
+    footer.deck-footer {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 28px;
+      background: rgba(255, 255, 255, 0.92);
+      border-top: 1px solid #E2E8F0;
+      height: 52px;
+    }
+
+    .slide-dots { display: flex; align-items: center; gap: 8px; }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 4px;
+      background: #CBD5E1;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .dot.active {
+      width: 24px;
+      background: var(--primary);
+    }
+
+    .nav-buttons { display: flex; align-items: center; gap: 10px; }
+    .nav-btn {
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      color: #1E293B;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .slide-counter { font-size: 12.5px; font-weight: 800; color: #64748B; min-width: 45px; text-align: center; }
+
+    /* Lightbox Modal for Screenshot Zoom */
+    .lightbox-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease;
+    }
+    .lightbox-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .lightbox-img-box {
+      max-width: 90vw;
+      max-height: 78vh;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      background: #FFFFFF;
+    }
+    .lightbox-img-box img {
+      max-width: 90vw;
+      max-height: 78vh;
+      object-fit: contain;
+      display: block;
+    }
+    .lightbox-bar {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #FFFFFF;
+      padding: 10px 20px;
+      border-radius: 30px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    }
+    .lightbox-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0F172A;
+    }
+    .lightbox-link {
+      background: #4F46E5;
+      color: #FFFFFF;
+      text-decoration: none;
+      font-size: 12.5px;
+      font-weight: 800;
+      padding: 6px 14px;
+      border-radius: 20px;
+    }
+    .lightbox-close {
+      background: #F1F5F9;
+      border: none;
+      color: #334155;
+      font-size: 12.5px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    /* Presenter Notes Drawer */
+    .notes-drawer {
+      position: fixed;
+      bottom: 62px;
+      right: 28px;
+      width: 450px;
+      max-height: 460px;
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+    .notes-drawer.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+    .notes-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid #F1F5F9;
+      font-size: 13px;
+      font-weight: 800;
+      background: #F8FAFC;
+      border-radius: 16px 16px 0 0;
+    }
+    .notes-content {
+      padding: 16px;
+      font-size: 13.5px;
+      color: #334155;
+      line-height: 1.68;
+      overflow-y: auto;
+      max-height: 380px;
+    }
+    .notes-content h5 { color: #4F46E5; font-size: 12px; margin-bottom: 6px; font-weight: 800; }
+
+    /* Overview Modal */
+    .overview-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(14px);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      padding: 36px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .overview-modal.open { opacity: 1; pointer-events: auto; }
+    .overview-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .overview-title { font-size: 20px; font-weight: 800; color: #FFFFFF; }
+    .overview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; overflow-y: auto; }
+    .overview-thumb {
+      background: #FFFFFF;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      aspect-ratio: 16 / 9;
+      padding: 16px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .overview-thumb.active { border-color: #4F46E5; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.3); }
+
+    /* Archive Modal */
+    .archive-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(14px);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .archive-modal.open { opacity: 1; pointer-events: auto; }
+    .archive-dialog {
+      background: #FFFFFF;
+      border-radius: 20px;
+      width: 92%;
+      max-width: 680px;
+      padding: 26px 30px;
+      position: relative;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    .archive-dialog-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: #F1F5F9;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .archive-link-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .archive-item {
+      display: flex;
+      flex-direction: column;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border: 1px solid #E2E8F0;
+      background: #F8FAFC;
+      text-decoration: none;
+    }
+    .archive-item:hover { background: #EEF2FF; border-color: #818CF8; }
+    .archive-item .a-type { font-size: 10.5px; font-weight: 800; color: #4F46E5; }
+    .archive-item .a-name { font-size: 13px; font-weight: 800; color: #0F172A; margin: 2px 0; }
+    .archive-item .a-desc { font-size: 11px; color: #64748B; }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow glow-1"></div>
+  <div class="bg-glow glow-2"></div>
+  <div class="bg-glow glow-3"></div>
+
+  <!-- Header -->
+  <header class="deck-header">
+    <div class="brand-area">
+      <div class="badge-tag">
+        <span class="pulse-dot"></span>
+        2026 영서중학교 AI·디지털 선도학교
+      </div>
+      <div class="meeting-title">
+        교원학습공동체 활동 결과 발표
+      </div>
+    </div>
+
+    <!-- Header Tools -->
+    <div class="header-tools">
+      <button class="archive-nav-btn" id="archiveModalBtn">
+        📂 원본 링크 모음
+      </button>
+      <button class="tool-btn" id="overviewBtn" title="전체 슬라이드 보기 (O)">
+        ⊞ 한눈에 보기
+      </button>
+      <button class="tool-btn" id="fullscreenBtn" title="전체화면 (F)">
+        ⛶
+      </button>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </header>
+
+  <!-- Main Slide Viewport -->
+  <main class="presentation-viewport">
+    <div class="slide-wrapper">
+
+      <!-- =====================================================================
+           SLIDE 1: COVER
+      ====================================================================== -->
+      <section class="slide active" data-slide="1">
+        <div class="slide-content" style="margin:0;">
+          <div class="cover-split">
+            <!-- Left Info -->
+            <div class="cover-left">
+              <div class="cover-pill">✨ 2026 영서중학교 AI·디지털 선도학교 교원학습공동체</div>
+              <h1 class="cover-title" style="font-size:34px; margin-bottom:10px;">
+                2026 AI·디지털 선도학교<br />
+                <span class="gradient-text">교원학습공동체 활동 결과 발표</span>
+              </h1>
+              <p class="cover-desc">
+                ‘수업의 타당성’을 묻는 워크북 연구부터 <strong>이음AI 수업 실천 · 바이브 코딩 웹앱 제작</strong>까지
+              </p>
+
+              <!-- 16 Teachers Roster Box -->
+              <div class="roster-box">
+                <div class="roster-header">
+                  <span class="roster-title">👥 참여 교원 명단</span>
+                  <span class="roster-count">총 16명</span>
+                </div>
+                <div class="roster-grid">
+                  <div class="member-chip"><span>박준영 수석님(국어)</span></div>
+                  <div class="member-chip"><span>이소라 부장님(진로)</span></div>
+                  <div class="member-chip highlight-rep">
+                    <span>홍은영 부장님(과학)</span>
+                    <span class="role-badge rep">대표교사</span>
+                  </div>
+                  <div class="member-chip"><span>강소혜 부장님(미술)</span></div>
+                  <div class="member-chip"><span>이수복 부장님(수학)</span></div>
+                  <div class="member-chip"><span>이은영 부장님(가정)</span></div>
+                  <div class="member-chip"><span>변희연 부장님(미술)</span></div>
+                  <div class="member-chip"><span>노민선 선생님(과학)</span></div>
+                  <div class="member-chip"><span>김정완 선생님(수학)</span></div>
+                  <div class="member-chip"><span>정수아 선생님(국어)</span></div>
+                  <div class="member-chip"><span>최효석 선생님(과학)</span></div>
+                  <div class="member-chip"><span>전세연 선생님(정보)</span></div>
+                  <div class="member-chip"><span>강주은 선생님(국어)</span></div>
+                  <div class="member-chip highlight-pres">
+                    <span>임종윤 선생님(수학)</span>
+                    <span class="role-badge pres">발표자</span>
+                  </div>
+                  <div class="member-chip"><span>홍주은 선생님(사회)</span></div>
+                  <div class="member-chip"><span>백종환 선생님(역사)</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Live Screenshot Collage -->
+            <div class="cover-right-collage">
+              <div class="shot-card zoom-trigger" data-img="assets/notion_workspace.png" data-title="영서중 AI·디지털 선도학교 교원학습공동체 노션(Notion) 허브" data-url="https://app.notion.com/p/AI-3134913c2bb98017a95dcd0fb5e3b735">
+                <div class="shot-bar">
+                  <div class="shot-dots"><span></span><span></span><span></span></div>
+                  <span class="shot-bar-title">Notion · AI디지털 선도학교 교원학습공동체</span>
+                  <span class="shot-badge">통합 허브</span>
+                </div>
+                <div class="shot-img-wrap">
+                  <img src="assets/notion_workspace.png" alt="노션 워크스페이스" />
+                </div>
+              </div>
+
+              <div class="shot-card zoom-trigger" data-img="assets/padlet_6wol_live.png" data-title="6월 정기 모임 패들렛 (5단계 수업 고민 분석)" data-url="https://padlet.com/sjylim0829/ai-6-4feja002kbn5lpd7">
+                <div class="shot-bar">
+                  <div class="shot-dots"><span></span><span></span><span></span></div>
+                  <span class="shot-bar-title">6월 모임 패들렛</span>
+                </div>
+                <div class="shot-img-wrap">
+                  <img src="assets/padlet_6wol_live.png" alt="6월 모임 패들렛" />
+                </div>
+              </div>
+
+              <div class="shot-card zoom-trigger" data-img="assets/padlet_9wol_live.png" data-title="9월 7일 모임 패들렛 (캔바 AI 바이브 코딩 나눔)" data-url="https://padlet.com/sjylim0829/260907-ai-s023ck0j0wsjhppwt7at">
+                <div class="shot-bar">
+                  <div class="shot-dots"><span></span><span></span><span></span></div>
+                  <span class="shot-bar-title">9월 바이브 코딩 패들렛</span>
+                </div>
+                <div class="shot-img-wrap">
+                  <img src="assets/padlet_9wol_live.png" alt="9월 모임 패들렛" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <span>💡 모든 슬라이드의 스크린샷 이미지를 클릭하면 <strong>전체화면으로 확대</strong>하여 보실 수 있습니다.</span>
+          <span>2026 영서중학교 AI·디지털 선도학교 교원학습공동체</span>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           SLIDE 2: INFRASTRUCTURE & HUB
+      ====================================================================== -->
+      <section class="slide" data-slide="2">
+        <div class="slide-header-row">
+          <div>
+            <div class="slide-eyebrow">01 · SETUP & INFRASTRUCTURE (2월~3월 기반 구축)</div>
+            <h2 class="slide-title">이음AI 도입 & ‘노션(아카이브) × 패들렛(소통)’ 협업 생태계</h2>
+          </div>
+        </div>
+
+        <div class="slide-content">
+          <div class="visual-3col">
+            <!-- Shot 1: Plan PDF -->
+            <div class="shot-card zoom-trigger" data-img="assets/plan_p1.png" data-title="2026 AI·디지털 활용 선도학교 운영 계획서 (영서중학교)" data-url="https://app.notion.com/p/AI-3134913c2bb98017a95dcd0fb5e3b735">
+              <div class="shot-bar">
+                <div class="shot-dots"><span></span><span></span><span></span></div>
+                <span class="shot-bar-title">2026 선도학교 운영 계획서</span>
+                <span class="shot-badge">다교과 16명</span>
+              </div>
+              <div class="shot-img-wrap" style="background:#F8FAFC;">
+                <img src="assets/plan_p1.png" alt="운영계획서" style="object-fit:contain;" />
+              </div>
+              <div class="shot-caption">
+                <div>
+                  <div class="shot-caption-text">1. 다교과 교학공 조직 및 운영 계획 수립</div>
+                  <span class="shot-caption-sub">이음AI 멀티엔진 도입 및 맞춤형 에듀테크 지원</span>
+                </div>
+                <span class="zoom-pill">🔍 확대</span>
+              </div>
+            </div>
+
+            <!-- Shot 2: Initial Padlet -->
+            <div class="shot-card zoom-trigger" data-img="assets/padlet_init_live.png" data-title="2~3월 초기 운영 패들렛 (이런 수업, 어떤 도구? & 이음AI 미팅)" data-url="https://padlet.com/chlgytjr111/ai-wcol3kwzmsseism8">
+              <div class="shot-bar">
+                <div class="shot-dots"><span></span><span></span><span></span></div>
+                <span class="shot-bar-title">영서중 AI 교학공 초기 패들렛</span>
+                <span class="shot-badge" style="background:#E0F2FE; color:#0369A1;">동료 Q&A</span>
+              </div>
+              <div class="shot-img-wrap">
+                <img src="assets/padlet_init_live.png" alt="초기 패들렛" />
+              </div>
+              <div class="shot-caption">
+                <div>
+                  <div class="shot-caption-text">2. 「이런 수업, 어떤 도구?」 상시 코칭</div>
+                  <span class="shot-caption-sub">교사별 숙련도 격차를 줄이는 즉각적 Q&A 보드</span>
+                </div>
+                <span class="zoom-pill">🔍 확대</span>
+              </div>
+            </div>
+
+            <!-- Shot 3: Notion Workspace -->
+            <div class="shot-card zoom-trigger" data-img="assets/notion_workspace.png" data-title="노션(Notion) 통합 아카이브 (계정·예산·회의록·수업기록)" data-url="https://app.notion.com/p/AI-3134913c2bb98017a95dcd0fb5e3b735">
+              <div class="shot-bar">
+                <div class="shot-dots"><span></span><span></span><span></span></div>
+                <span class="shot-bar-title">교학공 노션 통합 아카이브</span>
+                <span class="shot-badge" style="background:#D1FAE5; color:#047857;">통합 관리</span>
+              </div>
+              <div class="shot-img-wrap">
+                <img src="assets/notion_workspace.png" alt="노션 통합 아카이브" />
+              </div>
+              <div class="shot-caption">
+                <div>
+                  <div class="shot-caption-text">3. 노션 통합 워크스페이스 구축</div>
+                  <span class="shot-caption-sub">이음AI 계정 · 예산 · 월별 회의록 · 수업자료 집약</span>
+                </div>
+                <span class="zoom-pill">🔍 확대</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <span>핵심 기반: <strong>이음AI (ChatGPT·Claude·Gemini 동시 비교)</strong> + <strong>1인당 맞춤형 에듀테크 구독 지원</strong></span>
+          <span>이미지를 클릭하면 크게 보실 수 있습니다</span>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           SLIDE 3: 5-STEP DESIGN & VALIDITY
+      ====================================================================== -->
+      <section class="slide" data-slide="3">
+        <div class="slide-header-row">
+          <div>
+            <div class="slide-eyebrow" style="color:#0284C7;">02 · RESEARCH & 5-STEP ANALYSIS (4월~6월 모임)</div>
+            <h2 class="slide-title">“이 도구가 수업에 타당한가?” — 5단계 수업 고민 분석 워크숍</h2>
+          </div>
+        </div>
+
+        <div class="slide-content">
+          <div class="slide3-layout">
+            <!-- Left: Large 6월 Padlet Live Screenshot -->
+            <div class="shot-card zoom-trigger" data-img="assets/padlet_6wol_live.png" data-title="6월 정기 모임 패들렛 — 5단계 수업 고민 분석 및 선생님 댓글 나눔" data-url="https://padlet.com/sjylim0829/ai-6-4feja002kbn5lpd7">
+              <div class="shot-bar">
+                <div class="shot-dots"><span></span><span></span><span></span></div>
+                <span class="shot-bar-title">AI 디지털 선도학교 6월 모임 패들렛 (실제 댓글 14건+)</span>
+                <span class="shot-badge" style="background:#FFF1F2; color:#E11D48;">실시간 협의</span>
+              </div>
+              <div class="shot-img-wrap">
+                <img src="assets/padlet_6wol_live.png" alt="6월 모임 패들렛" />
+              </div>
+              <div class="shot-caption">
+                <div>
+                  <div class="shot-caption-text">6월 패들렛: 교실 속 진짜 고민(AS-IS)과 이상적 수업(TO-BE) 댓글 나눔</div>
+                  <span class="shot-caption-sub">멘티미터 아이스브레이킹 → 1~5단계 섹션별 선생님들의 수업 고민 실시간 기록</span>
+                </div>
+                <span class="zoom-pill">🔍 댓글 확대</span>
+              </div>
+            </div>
+
+            <!-- Right: Guidebook Worksheet + 5 Step Summary -->
+            <div class="step-pills-col">
+              <div class="shot-card zoom-trigger" style="flex:1;" data-img="assets/guidebook_p1.png" data-title="『성장하는 교사, 다섯 가지 질문』 3.1 수업 고민 워크시트" data-url="https://padlet.com/sjylim0829/ai-6-4feja002kbn5lpd7">
+                <div class="shot-bar">
+                  <div class="shot-dots"><span></span><span></span><span></span></div>
+                  <span class="shot-bar-title">『성장하는 교사, 다섯 가지 질문』 가이드북 3.1</span>
+                  <span class="shot-badge">이론·타당성</span>
+                </div>
+                <div class="shot-img-wrap" style="background:#F8FAFC;">
+                  <img src="assets/guidebook_p1.png" alt="가이드북 3.1" style="object-fit:contain;" />
+                </div>
+                <div class="shot-caption">
+                  <div>
+                    <div class="shot-caption-text">에듀테크의 목적·내용·방법·평가적 타당성 점검</div>
+                    <span class="shot-caption-sub">‘1인 1에듀테크 탐구’와 교과 성취기준 매핑</span>
+                  </div>
+                  <span class="zoom-pill">🔍 확대</span>
+                </div>
+              </div>
+
+              <!-- 5 Steps Compact Pills -->
+              <div class="mini-step-row">
+                <div class="mini-step">
+                  <strong>1. 문제 확인</strong>
+                  <span>교실 속 고민</span>
+                </div>
+                <div class="mini-step" style="border-top-color:#0284C7;">
+                  <strong>2. 요구 분석</strong>
+                  <span>AS-IS vs TO-BE</span>
+                </div>
+                <div class="mini-step" style="border-top-color:#7C3AED;">
+                  <strong>3. 과제 분석</strong>
+                  <span>성취기준 매핑</span>
+                </div>
+                <div class="mini-step" style="border-top-color:#059669;">
+                  <strong>4. 학습자 분석</strong>
+                  <span>인지·정의·기술</span>
+                </div>
+                <div class="mini-step" style="border-top-color:#D97706;">
+                  <strong>5. 환경 분석</strong>
+                  <span>기기·동료문화</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <span>핵심 전환: 단순 활동 사진 나열이 아닌 <strong>‘수업 문제를 해결하는 실천적 연구 과정’</strong> 기록</span>
+          <a href="https://padlet.com/sjylim0829/ai-6-4feja002kbn5lpd7" target="_blank" style="color:#4F46E5; font-weight:800; text-decoration:none;">6월 패들렛 원본 열기 ↗</a>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           SLIDE 4: SUBJECT CLASS SHOWCASES
+      ====================================================================== -->
+      <section class="slide" data-slide="4">
+        <div class="slide-header-row">
+          <div>
+            <div class="slide-eyebrow" style="color:#E11D48;">03 · STUDENT OUTPUTS IN CLASS (교과별 수업 실천 결과물)</div>
+            <h2 class="slide-title">교실에서 꽃피운 학생 주도 AI 수업 산출물 (과학 · 사회 · 국어)</h2>
+          </div>
+        </div>
+
+        <div class="slide-content">
+          <div class="visual-3col">
+            <!-- Column 1 (Left): Science Grade 2 -->
+            <div class="shot-card zoom-trigger" data-img="assets/science_padlet_live.png" data-title="[과학 2학년 · 홍은영T] 광합성 산물의 저장과 이용 정보그림 패들렛 (160명+ 참여)" data-url="https://padlet.com/tracy02/padlet-u7lge642nsm7fgwq">
+              <div class="shot-bar">
+                <div class="shot-dots"><span></span><span></span><span></span></div>
+                <span class="shot-bar-title">과학 2학년 · 광합성 정보그림 패들렛</span>
+                <span class="shot-badge" style="background:#EEF2FF; color:#4338CA;">이음AI × 패들렛</span>
+              </div>
+              <div class="shot-img-wrap">
+                <img src="assets/science_padlet_live.png" alt="과학 광합성 패들렛" />
+                <div class="inset-thumb zoom-trigger" data-img="assets/science_photo_work_2.png" data-title="학생 손그림을 이음AI로 변환한 광합성 산물(사과) 정보그림" data-url="https://padlet.com/tracy02/padlet-u7lge642nsm7fgwq">
+                  <img src="assets/science_photo_work_2.png" alt="학생 AI 작품" />
+                  <div class="inset-label">학생 AI 변환 작품 (클릭)</div>
+                </div>
+              </div>
+              <div class="shot-caption">
+                <div>
+                  <div class="shot-caption-text">과학 2 · 손그림 → 이음AI 정보그림 변환</div>
+                  <span class="shot-caption-sub">Claude·GPT·Gemini 모델별 표현 비교 (홍은영T)</span>
+                </div>
+                <span class="zoom-pill">🔍 확대</span>
+              </div>
+            </div>
+
+            <!-- Column 2 (Center, Vertical Stack): Social Studies Grade 3 (2 Outputs) -->
+            <div class="vertical-stack-col">
+              <!-- Social 3 Top: Geography -->
+              <div class="shot-card zoom-trigger" data-img="assets/social_geo_live.png" data-title="[사회 3학년 · 홍주은T] 식량 자원의 포장지 지리 분석 & 세계시민 AI 포스터 전시회" data-url="https://padlet.com/mihong0125/2026-3-2-8f3t2zvb6ozlqqtx">
+                <div class="shot-bar">
+                  <div class="shot-dots"><span></span><span></span><span></span></div>
+                  <span class="shot-bar-title">사회 3학년 · 포장지 지리 활동 수행평가</span>
+                  <span class="shot-badge" style="background:#D1FAE5; color:#047857;">AI 이미지 생성</span>
+                </div>
+                <div class="shot-img-wrap">
+                  <img src="assets/social_geo_live.png" alt="사회 지리 패들렛" />
+                  <div class="inset-thumb zoom-trigger" style="width:38%; height:64%;" data-img="assets/social_geo_work_1.png" data-title="학생 제작 AI 인포그래픽 — 물 부족 문제를 극복한 미래의 호주" data-url="https://padlet.com/mihong0125/2026-3-2-8f3t2zvb6ozlqqtx">
+                    <img src="assets/social_geo_work_1.png" alt="호주 물 부족 AI 포스터" />
+                    <div class="inset-label">AI 포스터 작품</div>
+                  </div>
+                </div>
+                <div class="shot-caption" style="padding:7px 12px;">
+                  <div>
+                    <div class="shot-caption-text" style="font-size:12px;">사회 3 · 포장지 원산지 분석 & AI 전시회</div>
+                    <span class="shot-caption-sub" style="font-size:11px;">기후·농업 세계화 해결책을 AI 이미지로 시각화</span>
+                  </div>
+                  <span class="zoom-pill">🔍 확대</span>
+                </div>
+              </div>
+
+              <!-- Social 3 Bottom: Election Song -->
+              <div class="shot-card zoom-trigger" data-img="assets/social_song_live.png" data-title="[사회 3학년 · 홍주은T] 살기 좋은 도시 만들기 공약 발표 & Suno AI 선거송 제작" data-url="https://padlet.com/geogeohong/2026-3-2-lzm9c8eh9z1szspd">
+                <div class="shot-bar">
+                  <div class="shot-dots"><span></span><span></span><span></span></div>
+                  <span class="shot-bar-title">사회 3학년 · 살기 좋은 도시 공약 & 선거송</span>
+                  <span class="shot-badge" style="background:#FFF1F2; color:#E11D48;">Suno AI 작곡</span>
+                </div>
+                <div class="shot-img-wrap">
+                  <img src="assets/social_song_live.png" alt="사회 선거송 패들렛" />
+                </div>
+                <div class="shot-caption" style="padding:7px 12px;">
+                  <div>
+                    <div class="shot-caption-text" style="font-size:12px;">사회 3 · 지역 공약 포스터 & Suno 선거송</div>
+                    <span class="shot-caption-sub" style="font-size:11px;">모둠별 정당 공약 수립 및 AI 선거송 작곡</span>
+                  </div>
+                  <span class="zoom-pill">🔍 확대</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Column 3 (Right): Korean Subject JajakJajak -->
+            <div class="shot-card zoom-trigger" data-img="assets/korean_jajak_live.png" data-title="[국어과] AI 기반 글쓰기 교육 플랫폼 ‘자작자작(JajakJajak)’ 활용 수업" data-url="https://www.jajakjajak.com/">
+              <div class="shot-bar">
+                <div class="shot-dots"><span></span><span></span><span></span></div>
+                <span class="shot-bar-title">국어과 · AI 글쓰기 플랫폼 ‘자작자작(JajakJajak)’</span>
+                <span class="shot-badge" style="background:#E0F2FE; color:#0369A1;">AI 작문·피드백</span>
+              </div>
+              <div class="shot-img-wrap" style="background:#FFFFFF;">
+                <img src="assets/korean_jajak_live.png" alt="국어과 자작자작 웹페이지" style="object-fit:cover; object-position:top left;" />
+              </div>
+              <div class="shot-caption">
+                <div>
+                  <div class="shot-caption-text">국어 · ‘자작자작’ 활용 글쓰기 역량 강화</div>
+                  <span class="shot-caption-sub">성취기준 맞춤 글감 추천 및 AI 작성 가이드·피드백</span>
+                </div>
+                <span class="zoom-pill">🔍 확대</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <span>작은 사진(학생 AI 작품)을 클릭하면 해당 학생의 고화질 결과물을 단독 확대해서 볼 수 있습니다.</span>
+          <span>과학 · 사회 · 국어 교과별 맞춤형 에듀테크 수업 실천</span>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           SLIDE 5: TEACHER VIBE CODING & WEB APPS
+      ====================================================================== -->
+      <section class="slide" data-slide="5">
+        <div class="slide-header-row">
+          <div>
+            <div class="slide-eyebrow" style="color:#7C3AED;">04 · TEACHER-BUILT SIMULATIONS & WEB APPS (교사 개발 도구)</div>
+            <h2 class="slide-title">도구 소비자에서 제작자로 — 교사가 직접 만든 시뮬레이션 & 웹앱 4종</h2>
+          </div>
+        </div>
+
+        <div class="slide-content">
+          <div class="visual-2x2">
+            <!-- Left Span 2 Rows: Claude Vibe Coding Particle Simulation -->
+            <div class="shot-card span-2rows zoom-trigger" data-img="assets/claude_vibe_coding.jpg" data-title="[과학 1학년 · 최효석T] 이음AI(Claude) 바이브 코딩으로 제작한 입자 운동 시뮬레이션" data-url="assets/particle_sim.html">
+              <div class="shot-bar">
+                <div class="shot-dots"><span></span><span></span><span></span></div>
+                <span class="shot-bar-title">이음AI (claude-sonnet-4.5) 바이브 코딩 → HTML 시뮬레이션</span>
+                <span class="shot-badge" style="background:#F3E8FF; color:#6D28D9;">최효석T 제작</span>
+              </div>
+              <div class="shot-img-wrap">
+                <img src="assets/claude_vibe_coding.jpg" alt="클로드 바이브 코딩 시뮬레이션" />
+                <div class="inset-thumb zoom-trigger" data-img="assets/particle_sim_live.png" data-title="실제 작동하는 입자 운동 시뮬레이션 HTML 파일" data-url="assets/particle_sim.html" style="width:46%; height:44%;">
+                  <img src="assets/particle_sim_live.png" alt="시뮬레이션 실행 화면" style="object-fit:cover !important;" />
+                  <div class="inset-label">실제 시뮬레이션 화면</div>
+                </div>
+              </div>
+              <div class="shot-caption">
+                <div>
+                  <div class="shot-caption-text">1. 자연어 프롬프트로 만든 「입자 운동 시뮬레이션」</div>
+                  <span class="shot-caption-sub">"온도와 입자 수만 바꿀 수 있고 빠르기는 잔상 길이로 표현해줘"</span>
+                </div>
+                <span class="zoom-pill">🔍 확대</span>
+              </div>
+            </div>
+
+            <!-- Right Top 1: AI 생기부 검토 도우미 -->
+            <div class="shot-card zoom-trigger" data-img="assets/webapp_saenggibu.png" data-title="[교사 개발 웹앱 1] 🌱 AI 생기부 검토 도우미 (기재요령 준수 및 문장 최적화)" data-url="https://script.google.com/macros/s/AKfycbyUeElFdKai1kmnB36e6dk1XfRa7WrSg8OpYb_0wDKcgWKSDEbto-ABzU-u8GJF7gwi/exec">
+              <div class="shot-bar">
+                <div class="shot-dots"><span></span><span></span><span></span></div>
+                <span class="shot-bar-title">🌱 AI 생기부 검토 도우미</span>
+                <span class="shot-badge" style="background:#E0F2FE; color:#0369A1;">행정 효율화</span>
+              </div>
+              <div class="shot-img-wrap">
+                <img src="assets/webapp_saenggibu.png" alt="생기부 검토 도우미" />
+              </div>
+              <div class="shot-caption" style="padding:7px 12px;">
+                <div class="shot-caption-text" style="font-size:12px;">2. 공백 교정 · 금지어 탐지 · 문장 최적화</div>
+                <span class="zoom-pill">🔍 확대</span>
+              </div>
+            </div>
+
+            <!-- Right Top 2: 생태전환 Eco-MBTI -->
+            <div class="shot-card zoom-trigger" data-img="assets/webapp_ecombt.png" data-title="[교사 개발 웹앱 2] 🌍 생태전환 Eco-MBTI (중학생 초록 정체성 찾기)" data-url="https://script.google.com/macros/s/AKfycbxzytTr14cZFXljnBUJkJzBzUnRL_1t0YnmsxQEbPvM6fU564otKE1Xfk8v8GLIH1gB/exec">
+              <div class="shot-bar">
+                <div class="shot-dots"><span></span><span></span><span></span></div>
+                <span class="shot-bar-title">🌍 생태전환 Eco-MBTI</span>
+                <span class="shot-badge" style="background:#D1FAE5; color:#047857;">창체·생태교육</span>
+              </div>
+              <div class="shot-img-wrap">
+                <img src="assets/webapp_ecombt.png" alt="생태전환 Eco-MBTI" />
+              </div>
+              <div class="shot-caption" style="padding:7px 12px;">
+                <div class="shot-caption-text" style="font-size:12px;">3. 나의 습관으로 만나는 생태 동물 진단</div>
+                <span class="zoom-pill">🔍 확대</span>
+              </div>
+            </div>
+
+            <!-- Right Bottom Span 2 Cols: Close-up Nature -->
+            <div class="shot-card zoom-trigger" style="grid-column: 2 / 4;" data-img="assets/webapp_nature.png" data-title="[교사 개발 웹앱 3] 🌿 클로즈업 네이처(Close-up Nature): 내 이름이 뭐게?" data-url="https://script.google.com/macros/s/AKfycbxYqYrUmCCt9VlvrIlT0fAq7vQci2JV8paYAwUsTjR8PbpNsFk36HID-qLeOBwdoCCb/exec">
+              <div class="shot-bar">
+                <div class="shot-dots"><span></span><span></span><span></span></div>
+                <span class="shot-bar-title">🌿 클로즈업 네이처 (Close-up Nature) : 자연물 추리 미션 웹앱</span>
+                <span class="shot-badge" style="background:#FEF3C7; color:#B45309;">탐구 활동</span>
+              </div>
+              <div class="shot-img-wrap">
+                <img src="assets/webapp_nature.png" alt="클로즈업 네이처" />
+              </div>
+              <div class="shot-caption" style="padding:7px 12px;">
+                <div class="shot-caption-text" style="font-size:12px;">4. 클로즈업 자연물 사진을 보고 실물을 찾아 인증샷을 제출하는 인터랙티브 미션 웹앱 (임종윤T)</div>
+                <span class="zoom-pill">🔍 확대</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <span>이음AI 아티팩트 & Google Apps Script를 활용해 코딩 장벽을 넘어 교사 맞춤형 웹앱 직접 배포</span>
+          <a href="assets/particle_sim.html" target="_blank" style="color:#4F46E5; font-weight:800; text-decoration:none;">⚛️ 입자 운동 시뮬레이션 직접 실행해보기 ↗</a>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           SLIDE 6: 9월 CANVA AI VIBE CODING
+      ====================================================================== -->
+      <section class="slide" data-slide="6">
+        <div class="slide-header-row">
+          <div>
+            <div class="slide-eyebrow" style="color:#059669;">05 · 2ND SEMESTER VIBE CODING WORKSHOP (9월 7일 모임)</div>
+            <h2 class="slide-title">캔바 AI 바이브 코딩 연수 & 2학기 ‘1인 1작은시도’ 나눔</h2>
+          </div>
+        </div>
+
+        <div class="slide-content">
+          <div class="slide6-layout">
+            <!-- Left: 9월 7일 Padlet Live Screenshot -->
+            <div class="shot-card zoom-trigger" data-img="assets/padlet_9wol_live.png" data-title="260907 AI 디지털 교원학습공동체 패들렛 (Talk 1~3 & 댓글 45건)" data-url="https://padlet.com/sjylim0829/260907-ai-s023ck0j0wsjhppwt7at">
+              <div class="shot-bar">
+                <div class="shot-dots"><span></span><span></span><span></span></div>
+                <span class="shot-bar-title">260907 AI 디지털 교원학습공동체 패들렛 (실시간 댓글 45건)</span>
+                <span class="shot-badge" style="background:#FFF1F2; color:#E11D48;">45개 댓글</span>
+              </div>
+              <div class="shot-img-wrap">
+                <img src="assets/padlet_9wol_live.png" alt="9월 7일 패들렛" />
+              </div>
+              <div class="shot-caption">
+                <div>
+                  <div class="shot-caption-text">[Talk 1] 연수 소감 · [Talk 2] 2학기 수업 디자인 · [Talk 3] 관심 에듀테크</div>
+                  <span class="shot-caption-sub">전 교원이 스마트폰 QR로 접속해 실시간 아이디어 & 응원 댓글 작성</span>
+                </div>
+                <span class="zoom-pill">🔍 댓글 확대</span>
+              </div>
+            </div>
+
+            <!-- Right: 2부 PPT Screenshot + Real Teacher Comments -->
+            <div style="display:flex; flex-direction:column; gap:10px; height:100%; min-height:0;">
+              <div class="shot-card zoom-trigger" style="flex:1;" data-img="assets/ppt_9wol_live.png" data-title="9월 7일 교학공 나눔 진행용 자체 제작 HTML 슬라이드 (2부 PPT)" data-url="https://padlet.com/sjylim0829/260907-ai-s023ck0j0wsjhppwt7at">
+                <div class="shot-bar">
+                  <div class="shot-dots"><span></span><span></span><span></span></div>
+                  <span class="shot-bar-title">연수 연계 나눔용 2부 HTML 웹 슬라이드</span>
+                  <span class="shot-badge">자체 제작 웹 슬라이드</span>
+                </div>
+                <div class="shot-img-wrap">
+                  <img src="assets/ppt_9wol_live.png" alt="9월 2부 PPT" />
+                </div>
+              </div>
+
+              <!-- Real Comments from Padlet 2 -->
+              <div class="quote-bubbles">
+                <div class="speech-card">
+                  💬 <strong>[Talk 1 · 소감]</strong> "캔바 AI가 <strong>웹앱 배포까지 가능하다는 것 자체</strong>가 굉장히 좋은 것 같아요! 웹앱 만드는 과정이 훨씬 수월해서 놀랐습니다." <em>(최효석·홍은영T 외 11건)</em>
+                </div>
+                <div class="speech-card" style="border-left-color:#0284C7;">
+                  💬 <strong>[Talk 2 · 2학기 수업]</strong> "과학 ‘1인 1탐구’ 전 단계에 <strong>캔바 AI 예비탐구 시뮬레이션</strong>으로 학생들이 조건을 바꾸며 가설을 세우는 1~2차시 수업을 해보고 싶습니다!" <em>(13건)</em>
+                </div>
+                <div class="speech-card" style="border-left-color:#059669;">
+                  💬 <strong>[Wrap-up · 응원]</strong> "항상 발전하려 노력하시는 모습들이 큰 자극이 됩니다!" / "세상이 바뀌고 있습니다. <strong>괴로워하지 않고 즐겁게 흐름을 타는 것</strong>도 좋을 것 같습니다!" <em>(이은영·최효석·강주은T 외)</em>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <span>2학기 실천 약속: 거창하지 않아도 단 1~2차시 수업에 가볍게 적용해보는 <strong>‘1인 1작은시도’ 챌린지</strong></span>
+          <a href="https://padlet.com/sjylim0829/260907-ai-s023ck0j0wsjhppwt7at" target="_blank" style="color:#4F46E5; font-weight:800; text-decoration:none;">9월 패들렛 원본 열기 ↗</a>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           SLIDE 7: CONCLUSION & SUMMARY GALLERY
+      ====================================================================== -->
+      <section class="slide" data-slide="7">
+        <div class="slide-header-row">
+          <div>
+            <div class="slide-eyebrow" style="color:#D97706;">06 · CONCLUSION & TAKEAWAYS (성찰과 마무리)</div>
+            <h2 class="slide-title">함께 고민하고 작게 시도하며 성장한 우리의 3가지 변화</h2>
+          </div>
+        </div>
+
+        <div class="slide-content">
+          <div class="slide7-layout">
+            <!-- Top: 3 Shifts -->
+            <div class="shift-3col">
+              <div class="shift-card">
+                <div style="font-size:11px; font-weight:800; color:#64748B;">CHANGE 01 · 수업 설계의 기준</div>
+                <div class="shift-flow">
+                  <span class="shift-from">신기한 기능 위주</span>
+                  <span>➔</span>
+                  <span class="shift-to">수업 목표·타당성 중심</span>
+                </div>
+                <div style="font-size:12px; color:#475569;">5단계 분석으로 교실의 AS-IS와 TO-BE를 잇는 최적의 도구 선택</div>
+              </div>
+
+              <div class="shift-card">
+                <div style="font-size:11px; font-weight:800; color:#64748B;">CHANGE 02 · 연구 문화의 진화</div>
+                <div class="shift-flow">
+                  <span class="shift-from">혼자 겪는 시행착오</span>
+                  <span>➔</span>
+                  <span class="shift-to" style="color:#0284C7; background:#E0F2FE;">즉각적 동료 코칭 & 공유</span>
+                </div>
+                <div style="font-size:12px; color:#475569;">노션 허브와 월별 패들렛으로 막히는 지점을 함께 해결하는 동료성</div>
+              </div>
+
+              <div class="shift-card">
+                <div style="font-size:11px; font-weight:800; color:#64748B;">CHANGE 03 · 교사 역할의 확장</div>
+                <div class="shift-flow">
+                  <span class="shift-from">에듀테크 소비자</span>
+                  <span>➔</span>
+                  <span class="shift-to" style="color:#059669; background:#D1FAE5;">바이브 코딩 크리에이터</span>
+                </div>
+                <div style="font-size:12px; color:#475569;">우리 반 수업과 업무에 필요한 시뮬레이션·웹앱을 직접 제작·배포</div>
+              </div>
+            </div>
+
+            <!-- Bottom: Inspire Quote + 8-Thumbnail Gallery Strip -->
+            <div class="gallery-strip">
+              <div class="inspire-banner">
+                <div style="font-size:28px; margin-bottom:8px;">🌟</div>
+                <blockquote style="font-size:20px; font-weight:900; line-height:1.4; color:#0F172A; margin-bottom:10px;">
+                  함께 고민하고 나누며 만들어낸<br />
+                  우리 학교 맞춤형<br />
+                  <span style="color:#4F46E5;">AI·디지털 수업 문화</span>
+                </blockquote>
+                <p style="font-size:12.5px; color:#475569; line-height:1.55;">
+                  단 1차시의 작은 시도가 아이들에게는 새로운 배움의 창이 됩니다.<br />
+                  <strong>함께해주신 선생님들과 경청해 주신 모든 분께 감사드립니다! 👏</strong>
+                </p>
+              </div>
+
+              <!-- 8 Visual Outputs Thumbnail Grid -->
+              <div class="thumb-strip-grid">
+                <div class="mini-shot zoom-trigger" data-img="assets/notion_workspace.png" data-title="노션 통합 워크스페이스" data-url="https://app.notion.com/p/AI-3134913c2bb98017a95dcd0fb5e3b735">
+                  <img src="assets/notion_workspace.png" alt="노션" />
+                  <span>① 노션 통합 허브</span>
+                </div>
+                <div class="mini-shot zoom-trigger" data-img="assets/padlet_6wol_live.png" data-title="6월 5단계 분석 패들렛" data-url="https://padlet.com/sjylim0829/ai-6-4feja002kbn5lpd7">
+                  <img src="assets/padlet_6wol_live.png" alt="6월 패들렛" />
+                  <span>② 6월 5단계 분석</span>
+                </div>
+                <div class="mini-shot zoom-trigger" data-img="assets/science_photo_work_2.png" data-title="과학 2학년 광합성 AI 정보그림" data-url="https://padlet.com/tracy02/padlet-u7lge642nsm7fgwq">
+                  <img src="assets/science_photo_work_2.png" alt="광합성 작품" />
+                  <span>③ 과학 AI 정보그림</span>
+                </div>
+                <div class="mini-shot zoom-trigger" data-img="assets/social_geo_work_1.png" data-title="사회 3학년 세계시민 AI 포스터" data-url="https://padlet.com/mihong0125/2026-3-2-8f3t2zvb6ozlqqtx">
+                  <img src="assets/social_geo_work_1.png" alt="사회 포스터" />
+                  <span>④ 사회 AI 지리포스터</span>
+                </div>
+                <div class="mini-shot zoom-trigger" data-img="assets/korean_jajak_live.png" data-title="국어과 자작자작 글쓰기 플랫폼" data-url="https://www.jajakjajak.com/">
+                  <img src="assets/korean_jajak_live.png" alt="자작자작" />
+                  <span>⑤ 국어 자작자작</span>
+                </div>
+                <div class="mini-shot zoom-trigger" data-img="assets/claude_vibe_coding.jpg" data-title="과학 1학년 입자 운동 시뮬레이션" data-url="assets/particle_sim.html">
+                  <img src="assets/claude_vibe_coding.jpg" alt="입자 시뮬레이션" />
+                  <span>⑥ 입자 시뮬레이션</span>
+                </div>
+                <div class="mini-shot zoom-trigger" data-img="assets/webapp_saenggibu.png" data-title="AI 생기부 검토 도우미 웹앱" data-url="https://script.google.com/macros/s/AKfycbyUeElFdKai1kmnB36e6dk1XfRa7WrSg8OpYb_0wDKcgWKSDEbto-ABzU-u8GJF7gwi/exec">
+                  <img src="assets/webapp_saenggibu.png" alt="생기부 도우미" />
+                  <span>⑦ 생기부 검토 웹앱</span>
+                </div>
+                <div class="mini-shot zoom-trigger" data-img="assets/padlet_9wol_live.png" data-title="9월 캔바 AI 바이브 코딩 패들렛" data-url="https://padlet.com/sjylim0829/260907-ai-s023ck0j0wsjhppwt7at">
+                  <img src="assets/padlet_9wol_live.png" alt="9월 패들렛" />
+                  <span>⑧ 9월 바이브코딩 나눔</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-footer">
+          <span>2026 영서중학교 AI·디지털 선도학교 교원학습공동체 (대표교사: 홍은영 / 발표자: 임종윤)</span>
+          <button class="archive-nav-btn open-archive-trigger" style="padding:3px 10px; font-size:11.5px;">📂 전체 산출물 링크 열기</button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Image Lightbox Modal -->
+  <div class="lightbox-modal" id="lightboxModal">
+    <div class="lightbox-img-box">
+      <img id="lightboxImg" src="" alt="확대 이미지" />
+    </div>
+    <div class="lightbox-bar">
+      <span class="lightbox-title" id="lightboxTitle">결과물 미리보기</span>
+      <a class="lightbox-link" id="lightboxUrl" href="#" target="_blank" rel="noopener noreferrer">원본 페이지 열기 ↗</a>
+      <button class="lightbox-close" id="lightboxClose">닫기 (ESC)</button>
+    </div>
+  </div>
+
+  <!-- Slide Overview Modal -->
+  <div class="overview-modal" id="overviewModal">
+    <div class="overview-header">
+      <h3 class="overview-title">전체 슬라이드 한눈에 보기 (총 7장)</h3>
+      <button class="tool-btn" id="closeOverviewBtn">닫기 (ESC)</button>
+    </div>
+    <div class="overview-grid" id="overviewGrid"></div>
+  </div>
+
+  <!-- Archive & Outputs Hub Modal -->
+  <div class="archive-modal" id="archiveModal">
+    <div class="archive-dialog">
+      <button class="archive-dialog-close" id="closeArchiveModalBtn">✕</button>
+      <h3 style="font-size:19px; font-weight:800; color:#0F172A; margin-bottom:4px;">📂 영서중 AI·디지털 교학공 원본 링크 모음</h3>
+      <p style="font-size:12.5px; color:#64748B;">클릭하시면 실제 노션, 패들렛, 학생 산출물, 교사 제작 웹앱을 새 창에서 바로 열 수 있습니다.</p>
+
+      <div class="archive-link-grid">
+        <a class="archive-item" href="https://app.notion.com/p/AI-3134913c2bb98017a95dcd0fb5e3b735" target="_blank">
+          <span class="a-type">📌 NOTION 허브</span>
+          <span class="a-name">AI디지털 선도학교 교원학습공동체 노션 ↗</span>
+          <span class="a-desc">회의록, 이음AI 계정, 예산, 워크북, 수업 기록 총괄</span>
+        </a>
+        <a class="archive-item" href="https://padlet.com/sjylim0829/ai-6-4feja002kbn5lpd7" target="_blank">
+          <span class="a-type">📌 6월 정기 모임 PADLET</span>
+          <span class="a-name">AI 디지털 선도학교 6월 모임 패들렛 ↗</span>
+          <span class="a-desc">5단계 수업 고민 분석 및 교사 댓글 14건+</span>
+        </a>
+        <a class="archive-item" href="https://padlet.com/sjylim0829/260907-ai-s023ck0j0wsjhppwt7at" target="_blank">
+          <span class="a-type">📌 9월 정기 모임 PADLET</span>
+          <span class="a-name">260907 AI 디지털 교원학습공동체 패들렛 ↗</span>
+          <span class="a-desc">캔바 AI 바이브 코딩 연수 나눔 및 교사 댓글 45건</span>
+        </a>
+        <a class="archive-item" href="https://padlet.com/chlgytjr111/ai-wcol3kwzmsseism8" target="_blank">
+          <span class="a-type">📌 2~3월 초기 PADLET</span>
+          <span class="a-name">영서중학교 AI 교원학습공동체 초기 보드 ↗</span>
+          <span class="a-desc">운영계획서, 이음AI 미팅, 입자 운동 시뮬레이션</span>
+        </a>
+        <a class="archive-item" href="https://padlet.com/tracy02/padlet-u7lge642nsm7fgwq" target="_blank">
+          <span class="a-type">🌿 과학 2학년 수업 산출물</span>
+          <span class="a-name">광합성 산물의 저장과 이용 정보그림 패들렛 ↗</span>
+          <span class="a-desc">이음AI 변환 학생 작품 100여 건 (홍은영T)</span>
+        </a>
+        <a class="archive-item" href="https://padlet.com/geogeohong/2026-3-2-lzm9c8eh9z1szspd" target="_blank">
+          <span class="a-type">🎵 사회 3학년 수업 산출물</span>
+          <span class="a-name">살기 좋은 도시 공약 발표 & Suno 선거송 ↗</span>
+          <span class="a-desc">Suno AI 작곡 선거송 및 정당 공약 프로젝트</span>
+        </a>
+        <a class="archive-item" href="https://padlet.com/mihong0125/2026-3-2-8f3t2zvb6ozlqqtx" target="_blank">
+          <span class="a-type">🌏 사회 3학년 수행평가</span>
+          <span class="a-name">농업 세계화 및 기후 ‘포장지 지리 활동’ ↗</span>
+          <span class="a-desc">생성형 AI 이미지를 활용한 세계시민 포스터 전시회</span>
+        </a>
+        <a class="archive-item" href="assets/particle_sim.html" target="_blank">
+          <span class="a-type">⚛️ 과학 1학년 시뮬레이션</span>
+          <span class="a-name">이음AI 클로드 제작 ‘입자 운동 시뮬레이션’ ↗</span>
+          <span class="a-desc">온도·입자 수 조절 인터랙티브 HTML (최효석T)</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="deck-footer">
+    <div class="slide-dots" id="slideDots"></div>
+    <div class="nav-buttons">
+      <span class="slide-counter" id="slideCounter">1 / 7</span>
+      <button class="nav-btn" id="prevBtn">← 이전</button>
+      <button class="nav-btn" id="nextBtn">다음 →</button>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const slides = document.querySelectorAll('.slide');
+      const totalSlides = slides.length;
+      let currentSlideIndex = 0;
+
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const slideCounter = document.getElementById('slideCounter');
+      const progressBar = document.getElementById('progressBar');
+      const slideDots = document.getElementById('slideDots');
+
+      const overviewModal = document.getElementById('overviewModal');
+      const overviewBtn = document.getElementById('overviewBtn');
+      const closeOverviewBtn = document.getElementById('closeOverviewBtn');
+      const overviewGrid = document.getElementById('overviewGrid');
+      const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+      // Lightbox Logic
+      const lightboxModal = document.getElementById('lightboxModal');
+      const lightboxImg = document.getElementById('lightboxImg');
+      const lightboxTitle = document.getElementById('lightboxTitle');
+      const lightboxUrl = document.getElementById('lightboxUrl');
+      const lightboxClose = document.getElementById('lightboxClose');
+
+      document.querySelectorAll('.zoom-trigger').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const imgSrc = el.getAttribute('data-img');
+          const title = el.getAttribute('data-title') || '';
+          const url = el.getAttribute('data-url') || '#';
+          lightboxImg.src = imgSrc;
+          lightboxTitle.textContent = title;
+          lightboxUrl.href = url;
+          lightboxModal.classList.add('open');
+        });
+      });
+
+      function closeLightbox() {
+        lightboxModal.classList.remove('open');
+      }
+      lightboxClose.addEventListener('click', closeLightbox);
+      lightboxModal.addEventListener('click', (e) => {
+        if (e.target === lightboxModal) closeLightbox();
+      });
+
+      // Archive Modal Logic
+      const archiveModal = document.getElementById('archiveModal');
+      const archiveModalBtn = document.getElementById('archiveModalBtn');
+      const closeArchiveModalBtn = document.getElementById('closeArchiveModalBtn');
+      document.querySelectorAll('.open-archive-trigger').forEach(btn => {
+        btn.addEventListener('click', () => archiveModal.classList.add('open'));
+      });
+      archiveModalBtn.addEventListener('click', () => archiveModal.classList.add('open'));
+      closeArchiveModalBtn.addEventListener('click', () => archiveModal.classList.remove('open'));
+      archiveModal.addEventListener('click', (e) => {
+        if (e.target === archiveModal) archiveModal.classList.remove('open');
+      });
+
+      // Dots & Overview
+      slides.forEach((slide, idx) => {
+        const dot = document.createElement('div');
+        dot.className = `dot ${idx === 0 ? 'active' : ''}`;
+        dot.addEventListener('click', () => updateSlide(idx));
+        slideDots.appendChild(dot);
+
+        const thumb = document.createElement('div');
+        thumb.className = `overview-thumb ${idx === 0 ? 'active' : ''}`;
+        const titleEl = slide.querySelector('.slide-title') || slide.querySelector('.cover-title');
+        const titleText = titleEl ? titleEl.innerText.replace(/\n/g, ' ') : `슬라이드 ${idx + 1}`;
+        thumb.innerHTML = `
+          <div style="font-size:11px; font-weight:800; color:#4F46E5;">SLIDE 0${idx + 1}</div>
+          <div style="font-size:13.5px; font-weight:800; color:#0F172A; line-height:1.35;">${titleText}</div>
+          <div style="font-size:11px; color:#64748B;">클릭하여 이동</div>
+        `;
+        thumb.addEventListener('click', () => {
+          updateSlide(idx);
+          overviewModal.classList.remove('open');
+        });
+        overviewGrid.appendChild(thumb);
+      });
+
+      function updateSlide(newIndex) {
+        if (newIndex < 0 || newIndex >= totalSlides) return;
+        slides.forEach((s, idx) => {
+          s.classList.remove('active', 'prev');
+          if (idx < newIndex) s.classList.add('prev');
+          else if (idx === newIndex) s.classList.add('active');
+        });
+        currentSlideIndex = newIndex;
+
+        slideDots.querySelectorAll('.dot').forEach((d, idx) => d.classList.toggle('active', idx === currentSlideIndex));
+        overviewGrid.querySelectorAll('.overview-thumb').forEach((t, idx) => t.classList.toggle('active', idx === currentSlideIndex));
+
+        slideCounter.textContent = `${currentSlideIndex + 1} / ${totalSlides}`;
+        progressBar.style.width = `${((currentSlideIndex + 1) / totalSlides) * 100}%`;
+        prevBtn.disabled = currentSlideIndex === 0;
+        nextBtn.disabled = currentSlideIndex === totalSlides - 1;
+      }
+
+      nextBtn.addEventListener('click', () => updateSlide(currentSlideIndex + 1));
+      prevBtn.addEventListener('click', () => updateSlide(currentSlideIndex - 1));
+
+      document.addEventListener('keydown', (e) => {
+        if (lightboxModal.classList.contains('open')) {
+          if (e.key === 'Escape') closeLightbox();
+          return;
+        }
+        if (archiveModal.classList.contains('open')) {
+          if (e.key === 'Escape') archiveModal.classList.remove('open');
+          return;
+        }
+        if (overviewModal.classList.contains('open')) {
+          if (e.key === 'Escape') overviewModal.classList.remove('open');
+          return;
+        }
+        if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+          e.preventDefault();
+          updateSlide(currentSlideIndex + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          updateSlide(currentSlideIndex - 1);
+        } else if (e.key === 'o' || e.key === 'O') {
+          overviewModal.classList.toggle('open');
+        } else if (e.key === 'f' || e.key === 'F') {
+          if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+          else document.exitFullscreen();
+        }
+      });
+
+      overviewBtn.addEventListener('click', () => overviewModal.classList.toggle('open'));
+      closeOverviewBtn.addEventListener('click', () => overviewModal.classList.remove('open'));
+      fullscreenBtn.addEventListener('click', () => {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+        else document.exitFullscreen();
+      });
+
+      updateSlide(0);
+    })();
+  </script>
+</body>
+</html>

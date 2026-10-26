@@ -1,0 +1,436 @@
+
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+							<style>
+								body {
+									background-color: white; /* Ensure the iframe has a white background */
+								}
+
+								
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .controls {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        
+        .value-display {
+            text-align: right;
+            color: #4CAF50;
+            font-size: 14px;
+        }
+        
+        canvas {
+            display: block;
+            background: #000;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            margin: 0 auto;
+        }
+        
+        .info {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #888;
+        }
+    
+
+							</style>
+                        </head>
+                        <body>
+                            <!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>입자 운동 시뮬레이션</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .controls {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        
+        .value-display {
+            text-align: right;
+            color: #4CAF50;
+            font-size: 14px;
+        }
+        
+        canvas {
+            display: block;
+            background: #000;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            margin: 0 auto;
+        }
+        
+        .info {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚛️ 입자 운동 시뮬레이션</h1>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label>🌡️ 온도 (Temperature)</label>
+                <input type="range" id="temperature" min="1" max="100" value="30">
+                <div class="value-display">온도: <span id="tempValue">30</span></div>
+            </div>
+            
+            <div class="control-group">
+                <label>🔵 입자 수 (Number of Particles)</label>
+                <input type="range" id="particleCount" min="10" max="200" value="50" step="10">
+                <div class="value-display">입자 수: <span id="countValue">50</span></div>
+            </div>
+        </div>
+        
+        <canvas id="canvas" width="800" height="600"></canvas>
+        
+        <div class="info">
+            💡 온도가 높을수록 입자가 빠르게 움직이며, 잔상이 길어집니다
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        const tempSlider = document.getElementById('temperature');
+        const countSlider = document.getElementById('particleCount');
+        const tempValue = document.getElementById('tempValue');
+        const countValue = document.getElementById('countValue');
+        
+        let temperature = 30;
+        let particleCount = 50;
+        let particles = [];
+        
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.angle = Math.random() * Math.PI * 2;
+                this.speed = 0;
+                this.radius = 4;
+                this.trail = [];
+                this.maxTrailLength = 0;
+                this.updateSpeed();
+            }
+            
+            updateSpeed() {
+                // 온도에 비례하여 속도 결정
+                this.speed = (temperature / 10) * (0.5 + Math.random() * 0.5);
+                // 잔상 길이도 속도에 비례
+                this.maxTrailLength = Math.floor(this.speed * 8);
+            }
+            
+            update() {
+                // 위치 업데이트
+                const vx = Math.cos(this.angle) * this.speed;
+                const vy = Math.sin(this.angle) * this.speed;
+                
+                // 잔상에 현재 위치 추가
+                this.trail.push({ x: this.x, y: this.y });
+                if (this.trail.length > this.maxTrailLength) {
+                    this.trail.shift();
+                }
+                
+                this.x += vx;
+                this.y += vy;
+                
+                // 벽과 충돌 처리
+                if (this.x < this.radius || this.x > canvas.width - this.radius) {
+                    this.angle = Math.PI - this.angle;
+                    this.x = Math.max(this.radius, Math.min(canvas.width - this.radius, this.x));
+                }
+                
+                if (this.y < this.radius || this.y > canvas.height - this.radius) {
+                    this.angle = -this.angle;
+                    this.y = Math.max(this.radius, Math.min(canvas.height - this.radius, this.y));
+                }
+            }
+            
+            draw() {
+                // 잔상 그리기
+                if (this.trail.length > 1) {
+                    for (let i = 0; i < this.trail.length - 1; i++) {
+                        const alpha = (i / this.trail.length) * 0.5;
+                        ctx.strokeStyle = `rgba(100, 200, 255, ${alpha})`;
+                        ctx.lineWidth = this.radius * (i / this.trail.length);
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(this.trail[i].x, this.trail[i].y);
+                        ctx.lineTo(this.trail[i + 1].x, this.trail[i + 1].y);
+                        ctx.stroke();
+                    }
+                }
+                
+                // 입자 본체 그리기
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#4CAF50';
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        }
+        
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+        
+        function updateParticles() {
+            particles.forEach(particle => {
+                particle.updateSpeed();
+            });
+        }
+        
+        function animate() {
+            // 반투명 검은색으로 덮어서 자연스러운 페이드 효과
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            requestAnimationFrame(animate);
+        }
+        
+        // 이벤트 리스너
+        tempSlider.addEventListener('input', (e) => {
+            temperature = parseInt(e.target.value);
+            tempValue.textContent = temperature;
+            updateParticles();
+        });
+        
+        countSlider.addEventListener('input', (e) => {
+            particleCount = parseInt(e.target.value);
+            countValue.textContent = particleCount;
+            initParticles();
+        });
+        
+        // 초기화 및 시작
+        initParticles();
+        animate();
+    </script>
+</body>
+</html>
+
+
+
+							<script>
+                            	
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        const tempSlider = document.getElementById('temperature');
+        const countSlider = document.getElementById('particleCount');
+        const tempValue = document.getElementById('tempValue');
+        const countValue = document.getElementById('countValue');
+        
+        let temperature = 30;
+        let particleCount = 50;
+        let particles = [];
+        
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.angle = Math.random() * Math.PI * 2;
+                this.speed = 0;
+                this.radius = 4;
+                this.trail = [];
+                this.maxTrailLength = 0;
+                this.updateSpeed();
+            }
+            
+            updateSpeed() {
+                // 온도에 비례하여 속도 결정
+                this.speed = (temperature / 10) * (0.5 + Math.random() * 0.5);
+                // 잔상 길이도 속도에 비례
+                this.maxTrailLength = Math.floor(this.speed * 8);
+            }
+            
+            update() {
+                // 위치 업데이트
+                const vx = Math.cos(this.angle) * this.speed;
+                const vy = Math.sin(this.angle) * this.speed;
+                
+                // 잔상에 현재 위치 추가
+                this.trail.push({ x: this.x, y: this.y });
+                if (this.trail.length > this.maxTrailLength) {
+                    this.trail.shift();
+                }
+                
+                this.x += vx;
+                this.y += vy;
+                
+                // 벽과 충돌 처리
+                if (this.x < this.radius || this.x > canvas.width - this.radius) {
+                    this.angle = Math.PI - this.angle;
+                    this.x = Math.max(this.radius, Math.min(canvas.width - this.radius, this.x));
+                }
+                
+                if (this.y < this.radius || this.y > canvas.height - this.radius) {
+                    this.angle = -this.angle;
+                    this.y = Math.max(this.radius, Math.min(canvas.height - this.radius, this.y));
+                }
+            }
+            
+            draw() {
+                // 잔상 그리기
+                if (this.trail.length > 1) {
+                    for (let i = 0; i < this.trail.length - 1; i++) {
+                        const alpha = (i / this.trail.length) * 0.5;
+                        ctx.strokeStyle = `rgba(100, 200, 255, ${alpha})`;
+                        ctx.lineWidth = this.radius * (i / this.trail.length);
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(this.trail[i].x, this.trail[i].y);
+                        ctx.lineTo(this.trail[i + 1].x, this.trail[i + 1].y);
+                        ctx.stroke();
+                    }
+                }
+                
+                // 입자 본체 그리기
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#4CAF50';
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        }
+        
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+        
+        function updateParticles() {
+            particles.forEach(particle => {
+                particle.updateSpeed();
+            });
+        }
+        
+        function animate() {
+            // 반투명 검은색으로 덮어서 자연스러운 페이드 효과
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            requestAnimationFrame(animate);
+        }
+        
+        // 이벤트 리스너
+        tempSlider.addEventListener('input', (e) => {
+            temperature = parseInt(e.target.value);
+            tempValue.textContent = temperature;
+            updateParticles();
+        });
+        
+        countSlider.addEventListener('input', (e) => {
+            particleCount = parseInt(e.target.value);
+            countValue.textContent = particleCount;
+            initParticles();
+        });
+        
+        // 초기화 및 시작
+        initParticles();
+        animate();
+    
+
+							</script>
+                        </body>
+                        </html>
+                    
